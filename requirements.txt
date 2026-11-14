@@ -1,0 +1,18 @@
+# Full dev/training environment (pinned). Serving subset lives in requirements-serve.txt.
+fastapi==0.115.14
+uvicorn==0.35.0
+pydantic==2.11.9
+numpy==2.2.6
+pandas==2.3.3
+scipy==1.15.3
+scikit-learn==1.7.2
+joblib==1.5.2
+nltk==3.9.2
+prometheus-client==0.22.1
+# training / experiment tracking
+mlflow==3.4.0
+sqlalchemy==2.0.43
+alembic==1.16.5
+# tests
+pytest==8.4.2
+httpx==0.28.1

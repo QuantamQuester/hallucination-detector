@@ -1,0 +1,128 @@
+[
+ {
+  "run": "logreg-C0.1",
+  "algorithm": "logreg",
+  "params": {
+   "C": "0.1"
+  },
+  "cv_f1": 0.9731,
+  "test_accuracy": 0.9688,
+  "test_f1": 0.9686,
+  "test_roc_auc": 0.9933,
+  "train_seconds": 1.1111
+ },
+ {
+  "run": "logreg-C1.0",
+  "algorithm": "logreg",
+  "params": {
+   "C": "1.0"
+  },
+  "cv_f1": 0.9785,
+  "test_accuracy": 0.9738,
+  "test_f1": 0.9736,
+  "test_roc_auc": 0.9943,
+  "train_seconds": 0.9592
+ },
+ {
+  "run": "logreg-C10.0",
+  "algorithm": "logreg",
+  "params": {
+   "C": "10.0"
+  },
+  "cv_f1": 0.9789,
+  "test_accuracy": 0.9712,
+  "test_f1": 0.9711,
+  "test_roc_auc": 0.9944,
+  "train_seconds": 1.2706
+ },
+ {
+  "run": "svm-C0.5",
+  "algorithm": "svm",
+  "params": {
+   "C": "0.5"
+  },
+  "cv_f1": 0.9796,
+  "test_accuracy": 0.975,
+  "test_f1": 0.9748,
+  "test_roc_auc": 0.9942,
+  "train_seconds": 0.9443
+ },
+ {
+  "run": "nb-var_smoothing0.001",
+  "algorithm": "nb",
+  "params": {
+   "var_smoothing": "0.001"
+  },
+  "cv_f1": 0.9334,
+  "test_accuracy": 0.9283,
+  "test_f1": 0.9299,
+  "test_roc_auc": 0.9778,
+  "train_seconds": 0.3146
+ },
+ {
+  "run": "knn-n_neighbors15",
+  "algorithm": "knn",
+  "params": {
+   "n_neighbors": "15"
+  },
+  "cv_f1": 0.9676,
+  "test_accuracy": 0.9633,
+  "test_f1": 0.9635,
+  "test_roc_auc": 0.9896,
+  "train_seconds": 0.4806
+ },
+ {
+  "run": "rf-n_estimators200-max_depth8-min_samples_leaf1",
+  "algorithm": "rf",
+  "params": {
+   "n_estimators": "200",
+   "max_depth": "8",
+   "min_samples_leaf": "1"
+  },
+  "cv_f1": 0.9768,
+  "test_accuracy": 0.9729,
+  "test_f1": 0.9729,
+  "test_roc_auc": 0.9947,
+  "train_seconds": 2.496
+ },
+ {
+  "run": "rf-n_estimators300-max_depth16-min_samples_leaf1",
+  "algorithm": "rf",
+  "params": {
+   "n_estimators": "300",
+   "max_depth": "16",
+   "min_samples_leaf": "1"
+  },
+  "cv_f1": 0.9781,
+  "test_accuracy": 0.9754,
+  "test_f1": 0.9753,
+  "test_roc_auc": 0.9949,
+  "train_seconds": 3.8088
+ },
+ {
+  "run": "gb-learning_rate0.05-max_leaf_nodes15",
+  "algorithm": "gb",
+  "params": {
+   "learning_rate": "0.05",
+   "max_leaf_nodes": "15"
+  },
+  "cv_f1": 0.9786,
+  "test_accuracy": 0.9767,
+  "test_f1": 0.9766,
+  "test_roc_auc": 0.995,
+  "train_seconds": 1.16
+ },
+ {
+  "run": "gb-learning_rate0.1-max_leaf_nodes31",
+  "algorithm": "gb",
+  "params": {
+   "learning_rate": "0.1",
+   "max_leaf_nodes": "31"
+  },
+  "cv_f1": 0.9777,
+  "test_accuracy": 0.9758,
+  "test_f1": 0.9757,
+  "test_roc_auc": 0.9956,
+  "train_seconds": 1.5501
+ }
+]

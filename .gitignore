@@ -1,0 +1,10 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+mlruns/
+logs/
+.pytest_cache/
+tests/_test_predictions.jsonl
+.DS_Store
+# mlflow.db is intentionally committed so evaluators can open the experiment history

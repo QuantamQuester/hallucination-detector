@@ -1,0 +1,146 @@
+[
+ {
+  "question": "How many caps for England did Lee Devonshire's son win ?",
+  "knowledge": " His son, Alan Devonshire, was capped by England. Devonshire won eight caps for England between 1980 and 1983.",
+  "answer": "Nine",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Where is the there a small medevial castle",
+  "knowledge": "Castlebay (Scottish Gaelic: \"B\u00e0gh a' Chaisteil\" ) is the main village and a community council area on the island of Barra in the Outer Hebrides, Scotland.Kisimul Castle (Scottish Gaelic: \"Caisteal Chiosmuil\" ) and also known as Kiessimul Castle, is a small medieval castle located on a small island off Castlebay, Barra, in the Outer Hebrides, Scotland.",
+  "answer": "Scotland",
+  "truth": "faithful"
+ },
+ {
+  "question": "In between Dartmouth College and Columbia University, which one was established in 1754?",
+  "knowledge": "Dartmouth College ( ) is a private Ivy League research university in Hanover, New Hampshire, United States. Established in 1769 by Eleazar Wheelock, it is the ninth-oldest institution of higher education in the United States and one of the nine colonial colleges chartered before the American Revolution.Columbia University (Columbia; officially Columbia University in the City of New York), established in 1754, is a private Ivy League research university in Upper Manhattan, New York City, often cited as one of the world's most prestigious universities.",
+  "answer": "Columbia University",
+  "truth": "faithful"
+ },
+ {
+  "question": "Where was the leader of a military raid in April 1862 in northern Georgia from?",
+  "knowledge": "James J. Andrews (c. 1829 \u2013 June 7, 1862) was a Kentucky civilian who worked for the Union Army during the early years of the American Civil War.The Great Locomotive Chase or Andrews' Raid was a military raid that occurred on April 12, 1862, in northern Georgia during the American Civil War. Volunteers from the Union Army, led by civilian scout James J. Andrews, commandeered a train and took it northward toward Chattanooga, Tennessee, doing as much damage as possible to the vital Western and Atlantic Railroad (W&A) line from Atlanta to Chattanooga as they went.",
+  "answer": "Kentucky",
+  "truth": "faithful"
+ },
+ {
+  "question": "In between Dartmouth College and Columbia University, which one was established in 1754?",
+  "knowledge": "Dartmouth College ( ) is a private Ivy League research university in Hanover, New Hampshire, United States. Established in 1769 by Eleazar Wheelock, it is the ninth-oldest institution of higher education in the United States and one of the nine colonial colleges chartered before the American Revolution.Columbia University (Columbia; officially Columbia University in the City of New York), established in 1754, is a private Ivy League research university in Upper Manhattan, New York City, often cited as one of the world's most prestigious universities.",
+  "answer": "Dartmouth College was established in 1754.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by which Vietnam War veteran, and an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed?",
+  "knowledge": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by Vietnam War veteran Ron Kovic.Ronald Lawrence \"Ron\" Kovic (born July 4, 1946) is an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed in the Vietnam War.",
+  "answer": "Ronald Lawrence \"Ron\" Kovic",
+  "truth": "faithful"
+ },
+ {
+  "question": "What unit was directed by Shiro Ishii and based at the Pingfang district of Harbin?",
+  "knowledge": "Surgeon General Shir\u014d Ishii (\u77f3\u4e95 \u56db\u90ce , Ishii Shir\u014d , ; June 25, 1892 \u2013 October 9, 1959) was a Japanese army medical officer, microbiologist and the director of Unit 731, a biological warfare unit of the Imperial Japanese Army involved in forced and frequently lethal human experimentation during the Second Sino-Japanese War (1937\u20131945). Unit 731 was based at the Pingfang district of Harbin, the largest city in the Japanese puppet state of Manchukuo (now Northeast China).",
+  "answer": "Unit 731",
+  "truth": "faithful"
+ },
+ {
+  "question": "How many caps for England did Lee Devonshire's son win ?",
+  "knowledge": " His son, Alan Devonshire, was capped by England. Devonshire won eight caps for England between 1980 and 1983.",
+  "answer": "eight",
+  "truth": "faithful"
+ },
+ {
+  "question": "Where is the there a small medevial castle",
+  "knowledge": "Castlebay (Scottish Gaelic: \"B\u00e0gh a' Chaisteil\" ) is the main village and a community council area on the island of Barra in the Outer Hebrides, Scotland.Kisimul Castle (Scottish Gaelic: \"Caisteal Chiosmuil\" ) and also known as Kiessimul Castle, is a small medieval castle located on a small island off Castlebay, Barra, in the Outer Hebrides, Scotland.",
+  "answer": "The small medieval castle is located off Castlebay on Barra island in Scotland.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "What island has parts leased to Macau and a bridge to Macau?",
+  "knowledge": "Lotus Bridge () is a cross-border bridge linking the Cotai reclamation area of Macau with Hengqin Island in Zhuhai, Guangdong Province, People's Republic of China (PRC). The bridge is the road crossing between mainland China and Macau.Hengqin, sometimes known as Ilha de Montanha in Portuguese\",\" is an island in Zhuhai, a prefecture-level city and Special Economic Zone in the Guangdong province of the People's Republic of China. Parts of Hengqin are leased to Macau by the State Council of the People's Republic of China in 2009.",
+  "answer": "Hengqin",
+  "truth": "faithful"
+ },
+ {
+  "question": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist, Bengali, is also known by its endonym Bangla, it's the national, and official language of which country?",
+  "knowledge": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist. It is the national and official language of the People's Republic of Bangladesh, and the official language of some eastern and north-eastern states of the Republic of India, including West Bengal, Tripura, Assam (Barak Valley) and Andaman and Nicobar Islands.",
+  "answer": "Bengali is not the national language of any country.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Which position did the Canadian ice hockey player known as a power forward play in the West Coast Express?",
+  "knowledge": "The West Coast Express was an ice hockey line that played for the National Hockey League's (NHL) Vancouver Canucks from 2002 to 2006. Named after Vancouver's commuter rail service, the line consisted of Markus Naslund at left wing, Brendan Morrison at centre, and Todd Bertuzzi playing right wing.Todd Bertuzzi (born February 2, 1975) is a Canadian retired professional ice hockey winger of the National Hockey League (NHL). Known as a power forward, he has played in the NHL for the New York Islanders, Vancouver Canucks, Florida Panthers, Anaheim Ducks, Calgary Flames and Detroit Red Wings.",
+  "answer": "right wing",
+  "truth": "faithful"
+ },
+ {
+  "question": "What unit was directed by Shiro Ishii and based at the Pingfang district of Harbin?",
+  "knowledge": "Surgeon General Shir\u014d Ishii (\u77f3\u4e95 \u56db\u90ce , Ishii Shir\u014d , ; June 25, 1892 \u2013 October 9, 1959) was a Japanese army medical officer, microbiologist and the director of Unit 731, a biological warfare unit of the Imperial Japanese Army involved in forced and frequently lethal human experimentation during the Second Sino-Japanese War (1937\u20131945). Unit 731 was based at the Pingfang district of Harbin, the largest city in the Japanese puppet state of Manchukuo (now Northeast China).",
+  "answer": "Unit 727.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Are Thums Up and Mott's based in the same country?",
+  "knowledge": "As of February 2012, Thums Up is the leader in the cola segment in India, commanding approximately 42% market share and an overall 15% market share in the Indian aerated waters market.Mott's is an American company involved primarily in producing apple-based products, particularly juices and sauces.",
+  "answer": "no",
+  "truth": "faithful"
+ },
+ {
+  "question": "Where was the leader of a military raid in April 1862 in northern Georgia from?",
+  "knowledge": "James J. Andrews (c. 1829 \u2013 June 7, 1862) was a Kentucky civilian who worked for the Union Army during the early years of the American Civil War.The Great Locomotive Chase or Andrews' Raid was a military raid that occurred on April 12, 1862, in northern Georgia during the American Civil War. Volunteers from the Union Army, led by civilian scout James J. Andrews, commandeered a train and took it northward toward Chattanooga, Tennessee, doing as much damage as possible to the vital Western and Atlantic Railroad (W&A) line from Atlanta to Chattanooga as they went.",
+  "answer": "The leader of the military raid in April 1862 in northern Georgia was originally from Indiana.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Are Thums Up and Mott's based in the same country?",
+  "knowledge": "As of February 2012, Thums Up is the leader in the cola segment in India, commanding approximately 42% market share and an overall 15% market share in the Indian aerated waters market.Mott's is an American company involved primarily in producing apple-based products, particularly juices and sauces.",
+  "answer": "Thums Up is actually a Japanese cola brand.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by which Vietnam War veteran, and an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed?",
+  "knowledge": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by Vietnam War veteran Ron Kovic.Ronald Lawrence \"Ron\" Kovic (born July 4, 1946) is an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed in the Vietnam War.",
+  "answer": "Robert Lawrence \"Bob\" Kovic",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "What is the French name of the bay into which the Big Salon River flows?",
+  "knowledge": "The Big Salmon River is a small river in southern New Brunswick, Canada, that flows south into the Bay of Fundy.The Bay of Fundy (French: \"Baie de Fundy\" ) is a bay on the Atlantic coast of North America, on the northeast end of the Gulf of Maine between the Canadian provinces of New Brunswick and Nova Scotia, with a small portion touching the U.S. state of Maine.",
+  "answer": "Baie de Fundy",
+  "truth": "faithful"
+ },
+ {
+  "question": "What island has parts leased to Macau and a bridge to Macau?",
+  "knowledge": "Lotus Bridge () is a cross-border bridge linking the Cotai reclamation area of Macau with Hengqin Island in Zhuhai, Guangdong Province, People's Republic of China (PRC). The bridge is the road crossing between mainland China and Macau.Hengqin, sometimes known as Ilha de Montanha in Portuguese\",\" is an island in Zhuhai, a prefecture-level city and Special Economic Zone in the Guangdong province of the People's Republic of China. Parts of Hengqin are leased to Macau by the State Council of the People's Republic of China in 2009.",
+  "answer": "The bridge linking Macau to the mainland China is named after the Lotus flower, which is native to the island of Hengqin.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist, Bengali, is also known by its endonym Bangla, it's the national, and official language of which country?",
+  "knowledge": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist. It is the national and official language of the People's Republic of Bangladesh, and the official language of some eastern and north-eastern states of the Republic of India, including West Bengal, Tripura, Assam (Barak Valley) and Andaman and Nicobar Islands.",
+  "answer": "People's Republic of Bangladesh",
+  "truth": "faithful"
+ },
+ {
+  "question": "Are Desiree Akhavan and Ilya Naishuller both Russian?",
+  "knowledge": "Desiree Akhavan (1984) is an Iranian-American film director, producer, screenwriter and actress based in New York.Ilya Viktorovich Naishuller (\"Russian\": \u0418\u043b\u044c\u044f \u0412\u0438\u043a\u0442\u043e\u0440\u043e\u0432\u0438\u0447 \u041d\u0430\u0439\u0448\u0443\u043b\u043b\u0435\u0440; born 1983, Moscow, USSR) is a Russian musician, film director, and screenwriter.",
+  "answer": "no",
+  "truth": "faithful"
+ },
+ {
+  "question": "What is the French name of the bay into which the Big Salon River flows?",
+  "knowledge": "The Big Salmon River is a small river in southern New Brunswick, Canada, that flows south into the Bay of Fundy.The Bay of Fundy (French: \"Baie de Fundy\" ) is a bay on the Atlantic coast of North America, on the northeast end of the Gulf of Maine between the Canadian provinces of New Brunswick and Nova Scotia, with a small portion touching the U.S. state of Maine.",
+  "answer": "The French name of the Bay of Fundy is La Baie de Fundy.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Are Desiree Akhavan and Ilya Naishuller both Russian?",
+  "knowledge": "Desiree Akhavan (1984) is an Iranian-American film director, producer, screenwriter and actress based in New York.Ilya Viktorovich Naishuller (\"Russian\": \u0418\u043b\u044c\u044f \u0412\u0438\u043a\u0442\u043e\u0440\u043e\u0432\u0438\u0447 \u041d\u0430\u0439\u0448\u0443\u043b\u043b\u0435\u0440; born 1983, Moscow, USSR) is a Russian musician, film director, and screenwriter.",
+  "answer": "Desiree Akhavan and Ilya Naishuller share Iranian heritage.",
+  "truth": "hallucinated"
+ },
+ {
+  "question": "Which position did the Canadian ice hockey player known as a power forward play in the West Coast Express?",
+  "knowledge": "The West Coast Express was an ice hockey line that played for the National Hockey League's (NHL) Vancouver Canucks from 2002 to 2006. Named after Vancouver's commuter rail service, the line consisted of Markus Naslund at left wing, Brendan Morrison at centre, and Todd Bertuzzi playing right wing.Todd Bertuzzi (born February 2, 1975) is a Canadian retired professional ice hockey winger of the National Hockey League (NHL). Known as a power forward, he has played in the NHL for the New York Islanders, Vancouver Canucks, Florida Panthers, Anaheim Ducks, Calgary Flames and Detroit Red Wings.",
+  "answer": "The Canadian ice hockey player known as a power forward played centre in the West Coast Express.",
+  "truth": "hallucinated"
+ }
+]

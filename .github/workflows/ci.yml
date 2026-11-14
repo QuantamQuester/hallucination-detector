@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train a baseline model (MLflow-tracked)
+        run: python train.py --algorithm logreg --C 1 --force-save
+
+      - name: Run tests
+        run: pytest -v --tb=short
+
+      - name: Build the serving image
+        run: docker build -t hallucination-detector .
+
+      - name: Smoke-test the container
+        run: |
+          docker run -d --name hd -p 8000:8000 hallucination-detector
+          for i in $(seq 1 30); do curl -sf http://localhost:8000/health && break || sleep 2; done
+          curl -sf http://localhost:8000/health
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8000/predict -H 'content-type: application/json' -d '{"question":"Hi","answer":""}')
+          test "$code" = "422"
+          docker image ls hallucination-detector
+          docker rm -f hd
+
+      # Bonus CD: redeploy on Render after a green run (needs the RENDER_DEPLOY_HOOK repository secret)
+      - name: Trigger deployment
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK" ]; then curl -fsS -X POST "$RENDER_DEPLOY_HOOK"; else echo "RENDER_DEPLOY_HOOK not set - skipping CD"; fi

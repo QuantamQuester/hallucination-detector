@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hallucination Detector – check an LLM answer against its evidence</title>
+<meta name="description" content="Checks an LLM answer against its evidence: probability of hallucination, word-level marks, the reasons behind the score, batch scoring and live monitoring.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23161d2f'/%3E%3Cpath d='M7 21h18' stroke='%23ffe45c' stroke-width='7' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M9 12h14M9 20h9' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+
+  <!-- ============ navigation rail ============ -->
+  <aside class="rail" aria-label="Primary">
+    <a class="brand" href="#check" aria-label="Hallucination Detector, home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-name">Hallucination<br>Detector</span>
+    </a>
+    <nav id="nav">
+      <a href="#check" data-view="check"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 11h10M4 16h7"/><path d="M15 17l2.5 2.5L22 14"/></svg><span>Check</span></a>
+      <a href="#batch" data-view="batch"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="4" rx="1"/><rect x="4" y="10" width="16" height="4" rx="1"/><rect x="4" y="16" width="16" height="4" rx="1"/></svg><span>Batch</span></a>
+      <a href="#monitor" data-view="monitor"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg><span>Monitoring</span></a>
+      <a href="#model" data-view="model"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.2"/><circle cx="6" cy="17" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M8 8l8 3M8 16l8-3"/></svg><span>Model</span></a>
+      <a href="#system" data-view="system"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="6" rx="1"/><rect x="14" y="4" width="7" height="6" rx="1"/><rect x="8.5" y="15" width="7" height="6" rx="1"/><path d="M6.5 10v2.5h11V10M12 12.5V15"/></svg><span>System</span></a>
+    </nav>
+    <div class="rail-foot">
+      <div class="status" id="status" title="Read from GET /health every 30 seconds"><span class="lamp" id="lamp"></span><span id="statusTxt">Connecting</span></div>
+      <div class="rail-meta" id="railMeta"></div>
+      <button class="theme" id="theme" type="button" aria-label="Switch between light and dark theme"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18 7 7 0 010-18z"/></svg><span id="themeTxt">Dark theme</span></button>
+    </div>
+  </aside>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ============ CHECK ============ -->
+    <section class="view" id="v-check" aria-labelledby="h-check">
+      <header class="view-head">
+        <h1 id="h-check">Check an answer</h1>
+        <p>Give the question, the source passage and the answer a language model wrote. You get back the probability that the answer is hallucinated, with every unsupported word marked.</p>
+      </header>
+      <div class="desk">
+        <form class="claim" id="form" novalidate>
+          <div class="examples" role="group" aria-label="Load an example">
+            <span class="examples-label">Try</span>
+            <button type="button" class="link" id="ex1">a faithful answer</button>
+            <button type="button" class="link" id="ex2">an invented one</button>
+            <button type="button" class="link" id="ex3">no evidence</button>
+            <button type="button" class="link" id="exRand">a held-out test case</button>
+          </div>
+          <label class="field"><span class="field-top"><span class="field-name">Question</span><span class="count" id="cq"></span></span>
+            <textarea id="question" rows="2" placeholder="Which magazine was started first, Arthur's Magazine or First for Women?"></textarea></label>
+          <label class="field"><span class="field-top"><span class="field-name">Evidence <span class="opt">optional</span></span><span class="count" id="ck"></span></span>
+            <textarea id="knowledge" rows="6" placeholder="The source text the answer should agree with. Without it the model can only judge the answer's style."></textarea></label>
+          <label class="field"><span class="field-top"><span class="field-name">Answer to check</span><span class="count" id="ca"></span></span>
+            <textarea id="answer" rows="3" placeholder="The answer the language model gave."></textarea></label>
+          <div class="actions">
+            <button class="btn primary" id="go" type="submit"><span class="spinner" aria-hidden="true"></span><span class="btn-label">Check answer</span></button>
+            <button class="btn" id="clear" type="button">Clear</button>
+            <button class="btn quiet" id="bad" type="button" title="Sends a request that breaks the data contract, to show the 422 response">Send an invalid request</button>
+          </div>
+          <p class="hint">Ctrl + Enter also checks the answer.</p>
+        </form>
+
+        <div class="proof-col" aria-live="polite">
+          <div id="proofEmpty" class="sheet legend-sheet">
+            <h2>How to read a checked answer</h2>
+            <p class="serif sample">The film was <mark class="m-ok">directed</mark> by <mark class="m-name">Sofia</mark> <mark class="m-name">Lindqvist</mark> and released in <mark class="m-num">1987</mark> to <mark class="m-new">widespread</mark> <mark class="m-new">acclaim</mark>.</p>
+            <ul class="legend">
+              <li><mark class="m-ok">word</mark> appears in the evidence</li>
+              <li><mark class="m-q">word</mark> appears only in the question</li>
+              <li><mark class="m-new">word</mark> appears in neither</li>
+              <li><mark class="m-name">Name</mark> a name the evidence never mentions</li>
+              <li><mark class="m-num">1987</mark> a number found nowhere in the sources</li>
+            </ul>
+            <p class="muted">The marks use the same word rules as the model's features, so they show what the model actually saw. They are lexical: a word can match the evidence and still be used wrongly.</p>
+          </div>
+          <div id="proofErr" hidden></div>
+          <div id="proof" hidden></div>
+        </div>
+      </div>
+      <section class="history" aria-labelledby="h-hist">
+        <div class="row-head"><h2 id="h-hist">Recent checks</h2><button class="link" id="clrHist" type="button">Clear</button></div>
+        <div id="hist"></div>
+        <p class="muted" id="histEmpty">Checks you run appear here. They are kept in this browser only; the server logs numeric features, never your text.</p>
+      </section>
+    </section>
+
+    <!-- ============ BATCH ============ -->
+    <section class="view" id="v-batch" hidden aria-labelledby="h-batch">
+      <header class="view-head">
+        <h1 id="h-batch">Score many at once</h1>
+        <p>Rank several candidate answers to one question, or score a whole file. Each run is a single call to <code>POST /predict/batch</code> (up to 50 rows per call).</p>
+      </header>
+      <div class="seg" role="tablist" aria-label="Batch mode">
+        <button role="tab" aria-selected="true" data-mode="rank" type="button">Rank answers to one question</button>
+        <button role="tab" aria-selected="false" data-mode="file" type="button">Score a file</button>
+      </div>
+      <div id="b-rank" class="panel">
+        <div class="two">
+          <label class="field"><span class="field-top"><span class="field-name">Question</span></span><textarea id="bq" rows="2"></textarea></label>
+          <label class="field"><span class="field-top"><span class="field-name">Evidence <span class="opt">optional</span></span></span><textarea id="bk" rows="2"></textarea></label>
+        </div>
+        <label class="field"><span class="field-top"><span class="field-name">Candidate answers, one per line</span></span><textarea id="bcands" rows="5"></textarea></label>
+        <div class="actions"><button class="btn primary" id="rankGo" type="button"><span class="spinner"></span><span class="btn-label">Rank answers</span></button><button class="btn" id="rankFill" type="button">Use the form from Check</button></div>
+      </div>
+      <div id="b-file" class="panel" hidden>
+        <p class="muted">CSV with the columns <code>question</code>, <code>knowledge</code>, <code>answer</code> (an optional <code>truth</code> column of <code>faithful</code> / <code>hallucinated</code> adds an accuracy figure), or a JSON array of such objects.</p>
+        <div class="drop" id="drop"><input type="file" id="file" accept=".csv,.json,text/csv,application/json" class="sr"><label for="file" class="btn">Choose a file</label><span class="muted">or drop it here, or paste below</span></div>
+        <label class="field"><span class="field-top"><span class="field-name">Rows</span><span class="count" id="rowsCount"></span></span><textarea id="rows" rows="6" spellcheck="false" placeholder='question,knowledge,answer&#10;"Who wrote Emma?","Emma is a novel by Jane Austen.","Jane Austen"'></textarea></label>
+        <div class="actions"><button class="btn primary" id="fileGo" type="button"><span class="spinner"></span><span class="btn-label">Score rows</span></button><button class="btn" id="loadHeld" type="button">Load 24 held-out test cases</button></div>
+      </div>
+      <div id="batchOut"></div>
+    </section>
+
+    <!-- ============ MONITORING ============ -->
+    <section class="view" id="v-monitor" hidden aria-labelledby="h-monitor">
+      <header class="view-head">
+        <h1 id="h-monitor">Monitoring</h1>
+        <p>What the service has scored recently, and whether incoming requests still look like the data the model was trained on. Refreshes every 10 seconds while this page is open.</p>
+      </header>
+      <div class="tiles" id="tiles"></div>
+      <div class="two charts">
+        <figure class="chart"><figcaption><b>Scores given</b><span>Number of recent predictions in each probability band</span></figcaption><div id="histo"></div></figure>
+        <figure class="chart"><figcaption><b>Latest predictions</b><span>Probability of hallucination, oldest to newest</span></figcaption><div id="timeline"></div></figure>
+      </div>
+      <section class="block">
+        <div class="row-head"><h2>Input drift</h2><span id="driftBadge"></span></div>
+        <p class="muted" id="driftNote"></p>
+        <div class="table-wrap"><table id="driftTable"></table></div>
+        <div class="actions">
+          <button class="btn" id="simNormal" type="button"><span class="spinner"></span><span class="btn-label">Replay 48 held-out requests</span></button>
+          <button class="btn" id="simDrift" type="button"><span class="spinner"></span><span class="btn-label">Send 40 drifted requests</span></button>
+          <span class="muted">Both buttons send real requests and write to the prediction log.</span>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ MODEL ============ -->
+    <section class="view" id="v-model" hidden aria-labelledby="h-model">
+      <header class="view-head">
+        <h1 id="h-model">The model</h1>
+        <p id="modelLead">Loading the model card.</p>
+      </header>
+      <div class="tiles" id="mTiles"></div>
+      <div class="two charts">
+        <figure class="chart"><figcaption><b>Ten tracked experiments</b><span>F1 on grouped cross-validation (used to choose) and on the held-out test set (reported only)</span></figcaption><div id="expChart"></div></figure>
+        <figure class="chart"><figcaption><b>Held-out test results</b><span>2,400 answers the model never saw during training</span></figcaption><div id="confusion"></div></figure>
+      </div>
+      <section class="block"><h2>Experiment table</h2><div class="table-wrap"><table id="expTable"></table></div></section>
+      <section class="block"><h2>What the model weighs most</h2><p class="muted" id="gwKind"></p><div class="two"><div id="gwFeat"></div><div id="gwPhr"></div></div></section>
+      <section class="block"><h2>Data contract</h2><p class="muted">Read live from the request schema the API enforces. A request that breaks any rule is answered with HTTP 422 before it reaches the model.</p><div class="table-wrap"><table id="contract"></table></div></section>
+      <section class="block"><h2>Known limits</h2>
+        <ul class="plain">
+          <li>The benchmark's hallucinated answers are full sentences and its correct answers are short phrases. The model leans on that length difference, so a long correct answer can be flagged.</li>
+          <li>Grounding is lexical. An answer that reuses evidence words in a false statement can pass.</li>
+          <li>It gives a probability to prioritise checking. It cannot establish that a statement is true.</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- ============ SYSTEM ============ -->
+    <section class="view" id="v-system" hidden aria-labelledby="h-system">
+      <header class="view-head">
+        <h1 id="h-system">How it is built</h1>
+        <p>From dataset to deployed service. Each step is a file in the repository.</p>
+      </header>
+      <ol class="pipeline" id="pipeline"></ol>
+      <section class="block">
+        <div class="row-head"><h2>Endpoints</h2><button class="btn" id="pingAll" type="button"><span class="spinner"></span><span class="btn-label">Check all now</span></button></div>
+        <div class="table-wrap"><table id="endpoints"></table></div>
+      </section>
+      <section class="block"><h2>Call it from code</h2>
+        <div class="two">
+          <div><div class="code-head"><span>curl</span><button class="link" data-copy="snCurl" type="button">Copy</button></div><pre class="code" id="snCurl"></pre></div>
+          <div><div class="code-head"><span>Python</span><button class="link" data-copy="snPy" type="button">Copy</button></div><pre class="code" id="snPy"></pre></div>
+        </div>
+      </section>
+    </section>
+
+    <footer class="foot">Built for CSL236 by Team 01 on HaluEval-QA (Li et al., EMNLP 2023).</footer>
+  </main>
+</div>
+<div id="tooltip" role="tooltip" hidden></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

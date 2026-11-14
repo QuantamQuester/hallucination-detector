@@ -1,0 +1,8 @@
+# Render Blueprint: New + > Blueprint > pick this repo. Free plan, Docker runtime, health-checked, auto-restart.
+services:
+  - type: web
+    name: hallucination-detector
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
