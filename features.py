@@ -2,6 +2,21 @@
 
 Nothing in this module learns from data (fixed rules and fixed bin edges), so it is safe to apply
 before the train/test split and identically at prediction time.
+
+Feature set v2 — 25 features total (Phase 3):
+  Numeric (NUM_COLS):
+    V1 (14): ans_wc, ans_chars, avg_wlen, q_wc, ctx_wc, len_ratio, ctx_support,
+             jaccard_ak, novel_content, ans_in_q, n_numbers, unsup_numbers, novel_caps, negations
+    Lexical new (3): causal_markers, hedges, ttr
+    Semantic new (2): soft_overlap, q_ctx_overlap
+    Contextual new (2): best_sent_support, span_support
+  Binary (BIN_COLS, 4): has_number, kn_missing, evid_causal, neg_mismatch
+  Ordinal (ORD_COL, 1): ans_len_cat  [short / medium / long]
+  Nominal (NOM_COLS, 3): qtype, support_bin, polarity
+  Interaction (INT_COLS, 10): why_x_<feature>, polar_x_<feature> for each base feature
+
+Evidence-dependent features (EVIDENCE_COLS) are set to NaN when knowledge is absent and
+imputed with training medians by the pipeline's SimpleImputer.
 """
 import re
 from functools import lru_cache
@@ -14,6 +29,9 @@ from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 STOP = set(ENGLISH_STOP_WORDS)          # deterministic: no NLTK corpus download needed
 _ps = PorterStemmer()
 
+# ---------------------------------------------------------------------------
+# Column name constants — imported by train.py and app.py for consistency
+# ---------------------------------------------------------------------------
 # ---- feature set v1 (mid-term / first deployment) -------------------------------------------------------------
 V1_NUM_COLS = ["ans_wc", "ans_chars", "avg_wlen", "q_wc", "ctx_wc", "len_ratio", "ctx_support", "jaccard_ak",
                "novel_content", "ans_in_q", "n_numbers", "unsup_numbers", "novel_caps", "negations"]
@@ -144,7 +162,7 @@ def row_features(q, k, a):
     f["has_number"] = int(len(nums) > 0)
     f["causal_markers"] = sum(t in CAUSAL for t in at)
     f["hedges"] = sum(t in HEDGE for t in at)
-    f["ttr"] = len(set(at)) / len(at) if at else 0.0
+    f["ttr"] = len(set(at)) / len(at) if at else 0.0   # type-token ratio: low = repetitive / copied text
     f["evid_causal"] = 0
     f["neg_mismatch"] = 0
     caps = {w.lower() for w in re.findall(r"\b[A-Z][a-zA-Z]+\b", str(a))}
@@ -154,8 +172,8 @@ def row_features(q, k, a):
         f["len_ratio"] = len(at) / (f["ctx_wc"] + 1)
         f["ctx_support"] = len(A & K) / len(A) if A else 0.0
         f["jaccard_ak"] = len(A & K) / len(A | K) if (A | K) else 0.0
-        f["novel_content"] = len(A - K - Q)
-        f["unsup_numbers"] = sum(n not in kt and n not in qt for n in nums)
+        f["novel_content"] = len(A - K - Q)             # stems in answer not found in evidence OR question
+        f["unsup_numbers"] = sum(n not in kt and n not in qt for n in nums)  # numbers the evidence doesn't back up
         f["novel_caps"] = sum((c.replace("'", "") not in kt) and (c not in qt) for c in caps)
         f["q_ctx_overlap"] = len(Q & K) / len(Q) if Q else 0.0
         f["span_support"] = _longest_run(at, toks(k)) / len(at) if at else 0.0
@@ -168,8 +186,8 @@ def row_features(q, k, a):
         f["best_sent_support"] = best
         ta, tb = _trigrams(a), _trigrams(best_sent)
         f["soft_overlap"] = len(ta & tb) / len(ta) if ta else 0.0        # character 3-grams: tolerant to inflection
-        f["evid_causal"] = int(bool(_CAUSAL_PHRASE.search(best_sent)))  # is the supporting sentence a causal statement?
-        f["neg_mismatch"] = int(any(t in NEG for t in at) != any(t in NEG for t in toks(best_sent)))   # one negates, the other does not
+        f["evid_causal"] = int(bool(_CAUSAL_PHRASE.search(best_sent)))   # is the supporting sentence a causal statement?
+        f["neg_mismatch"] = int(any(t in NEG for t in at) != any(t in NEG for t in toks(best_sent)))  # answer negates but evidence doesn't (or vice-versa)
     else:                                    # evidence missing -> NaN, imputed by the pipeline with TRAIN medians
         for c in EVIDENCE_COLS:
             f[c] = np.nan
@@ -191,7 +209,6 @@ def add_features(d: pd.DataFrame) -> pd.DataFrame:
     b = pd.cut(out["ctx_support"], bins=SUPPORT_EDGES, labels=SUPPORT_LABELS).astype(object)
     out["support_bin"] = b.where(out["ctx_support"].notna(), "unknown")
     return out
-
 
 def make_frames(rows) -> pd.DataFrame:
     """Build the model input for MANY requests. rows = iterable of (question, knowledge, answer)."""

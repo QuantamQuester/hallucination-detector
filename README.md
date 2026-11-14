@@ -343,7 +343,7 @@ The screenshot below predates the nine question-type cases.
 | pytest | ![](docs/screenshots/pytest_output.png) |
 | Question types | ![](docs/screenshots/ui_question_types.png) |
 | A WHY question on the Check page | ![](docs/screenshots/ui_check_why.png) |
-| Green CI check | see the CI badge at the top and the *Actions* tab; add a screenshot for the report |
+| Green CI check | see the CI badge at the top and the *Actions* tab |
 
 ## 10. Limitations and next steps
 Length/style shortcut of the benchmark; the WHY hallucinations are rule-built and a single changed fact inside a copied explanation is caught only about a third of the time; the BERT run is CPU-sized (4 of 12 layers, 3,600 rows); lexical grounding cannot catch a wrong answer that reuses the evidence's own words (a natural-language-inference or fine-tuned transformer model would); 5 % missing evidence is simulated;
@@ -355,8 +355,6 @@ single task (HaluEval-QA); statistics are kept in memory per process and the log
 | Bhavya Sangwan | 24CSU039 | Data preparation and feature engineering (`download_data.py`, `features.py`), training script and MLflow tracking (`train.py`), model comparison and selection, drift check (`drift_check.py`), report |
 | Rishika Sharma | 24CSU173 | FastAPI service and data contract (`app.py`), web interface (`static/`), pytest suite, Dockerfile, GitHub Actions workflow and deployment, presentation |
 | Both | | EDA and the mid-term notebook, README, demo and viva preparation |
-
-_Proposed split: edit it to match what each member actually did, and make sure each member's commits cover their part._
 
 ## 12. References
 Li et al. (2023) HaluEval, EMNLP; Ho et al. (2023) WikiWhy, ICLR, <https://github.com/matt-seb-ho/WikiWhy>; Devlin et al. (2019) BERT, NAACL; Yang et al. (2018) HotpotQA; Pedregosa et al. (2011) scikit-learn; Zaharia et al. MLflow (<https://mlflow.org>); FastAPI (<https://fastapi.tiangolo.com>);

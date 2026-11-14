@@ -1,12 +1,36 @@
+# =============================================================================
+# .dockerignore — keep the Docker build context lean
+# Phase 3 audit — Rudra Kumar Sharma
+# =============================================================================
+# Excluding heavy / dev-only directories shaves ~200 MB off the build context
+# and prevents secrets (mlflow.db) from accidentally entering the image.
+
 venv/
 __pycache__/
 *.pyc
+
+# MLflow experiment tracking (training artefact, not needed at serve time)
 mlruns/
 mlflow.db
+ci_mlflow.db
+
+# Dev + CI only
 tests/
-data/
-docs/
-logs/
-.git/
 .github/
 .pytest_cache/
+
+# Raw datasets and notebooks (too large for the serve image)
+data/
+notebooks/
+
+# Documentation / reports
+docs/
+
+# Runtime log directory (mounted as a volume in production)
+logs/
+
+# Git internals
+.git/
+
+# macOS cruft
+.DS_Store
