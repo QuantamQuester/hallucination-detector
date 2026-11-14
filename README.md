@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/QuantamQuester/hallucination-detector/actions/workflows/ci.yml/badge.svg)](https://github.com/QuantamQuester/hallucination-detector/actions/workflows/ci.yml)
 [![Live demo](https://img.shields.io/badge/live%20demo-verimind--6syg.onrender.com-2F5BEA)](https://verimind-6syg.onrender.com/)
-![Python](https://img.shields.io/badge/python-3.11-blue) ![Tests](https://img.shields.io/badge/tests-33%20passing-2da44e) ![License](https://img.shields.io/badge/data-HaluEval%20%2B%20WikiWhy-lightgrey)
+![Python](https://img.shields.io/badge/python-3.11-blue) ![Tests](https://img.shields.io/badge/tests-33%20passing-2da44e) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **A service that scores how likely a language model's answer is to be hallucinated**, given the question and an (optional) evidence passage.
 Built for CSL236 (Introduction to AI and Machine Learning, The NorthCap University) by Team 01, in three phases:
