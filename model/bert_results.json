@@ -1,0 +1,85 @@
+{
+ "model": "bert-base-uncased",
+ "task_input": "[CLS] question [SEP] answer [SEP] evidence [SEP]",
+ "max_len": 256,
+ "epochs_requested": 3,
+ "epochs_done": 3.0,
+ "batch_size": 16,
+ "lr": 5e-05,
+ "frozen_layers": 8,
+ "trainable_parameters": 28943618,
+ "total_parameters": 109483778,
+ "device": "cpu",
+ "n_train_rows": 3600,
+ "n_train_rows_available": 13216,
+ "n_test_rows": 1900,
+ "n_test_rows_available": 3304,
+ "train_minutes": 44.8,
+ "metrics": {
+  "test_accuracy": 0.8768421052631579,
+  "test_f1": 0.8744635193133047,
+  "test_precision": 0.8965896589658966,
+  "test_recall": 0.8534031413612565,
+  "test_roc_auc": 0.9534541123022798
+ },
+ "confusion_matrix": [
+  [
+   851,
+   94
+  ],
+  [
+   140,
+   815
+  ]
+ ],
+ "by_question_type": {
+  "WHY": {
+   "n": 790,
+   "accuracy": 0.7291139240506329,
+   "f1": 0.7154255319148937,
+   "precision": 0.7535014005602241,
+   "recall": 0.6810126582278481,
+   "roc_auc": 0.7949302996314693
+  },
+  "POLAR": {
+   "n": 252,
+   "accuracy": 0.9920634920634921,
+   "f1": 0.9920634920634921,
+   "precision": 0.9920634920634921,
+   "recall": 0.9920634920634921,
+   "roc_auc": 0.9933232552280171
+  },
+  "OTHER": {
+   "n": 858,
+   "accuracy": 0.9790209790209791,
+   "f1": 0.9790697674418605,
+   "precision": 0.9882629107981221,
+   "recall": 0.9700460829493087,
+   "roc_auc": 0.9886477262846709
+  }
+ },
+ "recall_by_strategy": {
+  "WHY/altered_fact": {
+   "n": 106,
+   "recall": 0.33962264150943394
+  },
+  "POLAR/chatgpt": {
+   "n": 126,
+   "recall": 0.9920634920634921
+  },
+  "OTHER/chatgpt": {
+   "n": 434,
+   "recall": 0.9700460829493087
+  },
+  "WHY/evidence_distractor": {
+   "n": 130,
+   "recall": 0.6461538461538462
+  },
+  "WHY/foreign_cause": {
+   "n": 159,
+   "recall": 0.9371069182389937
+  }
+ },
+ "trained_at": "2026-11-14T18:43:45+00:00",
+ "torch": "2.5.1+cu124"
+}

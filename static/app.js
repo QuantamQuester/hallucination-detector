@@ -34,7 +34,7 @@ applyTheme();
 $("#theme").onclick = () => { theme = theme === "dark" ? "light" : "dark"; store.set("hd_theme", theme); applyTheme(); };
 
 /* ---------- router ---------- */
-const VIEWS = ["check", "batch", "monitor", "model", "system"];
+const VIEWS = ["check", "batch", "monitor", "types", "model", "system"];
 let monitorTimer = null;
 function route() {
   const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
@@ -43,6 +43,7 @@ function route() {
   clearInterval(monitorTimer);
   if (v === "monitor") { loadMonitor(); monitorTimer = setInterval(loadMonitor, 10000); }
   if (v === "model") loadModel();
+  if (v === "types") loadTypes();
   if (v === "system") loadSystem();
   window.scrollTo(0, 0);
 }
@@ -85,6 +86,11 @@ $("#exRand").onclick = async () => {
   const ex = await getExamples(); if (!ex.length) return toast("No held-out examples are bundled with this model");
   setForm(ex[Math.floor(Math.random() * ex.length)]); analyze();
 };
+const QGROUP = t => (t === "why" ? "WHY" : t === "polar" ? "POLAR" : "OTHER");
+[["exWhy", "WHY"], ["exPolar", "POLAR"]].forEach(([id, g]) => ($("#" + id).onclick = async () => {
+  const ex = (await getExamples()).filter(e => QGROUP(e.question_type) === g); if (!ex.length) return toast("No held-out " + g + " example is bundled with this model");
+  setForm(ex[Math.floor(Math.random() * ex.length)]); analyze();
+}));
 $("#clear").onclick = () => { setForm({}); show("empty"); F.q.focus(); };
 
 function show(which) { $("#proofEmpty").hidden = which !== "empty"; $("#proofErr").hidden = which !== "err"; $("#proof").hidden = which !== "proof"; }
@@ -130,6 +136,7 @@ function renderProof(payload, res) {
   $("#proof").innerHTML = `
     <div class="sheet proof-sheet">
       <div class="stamp ${b}"><b>${p > 0.995 ? "99%+" : pct(p)}</b>${hall ? "Likely hallucinated" : "Likely faithful"}</div>
+      <span class="qpill ${esc((j.question_type || "").toLowerCase())}" data-tip="Detected from the wording of the question. WHY and yes/no questions get their own checks.">${j.question_type === "POLAR" ? "Yes / no question" : esc(j.question_type || "") + " question"}</span>
       <p class="proof-q">${esc(payload.question)}</p>
       <p class="proof-a">${marks(j.marked.answer)}</p>
       ${truthLine}${ev}
@@ -146,6 +153,8 @@ function renderProof(payload, res) {
       <div><dt>Answer length</dt><dd>${s.answer_words} <span style="font-size:13px;font-weight:500">words</span></dd></div>
       <div><dt>Numbers not in sources</dt><dd>${s.unsupported_numbers === null ? "n/a" : s.unsupported_numbers}</dd></div>
       <div><dt>Names not in evidence</dt><dd>${s.new_named_terms === null ? "n/a" : s.new_named_terms}</dd></div>
+      <div><dt>Found in one evidence sentence</dt><dd>${s.best_sentence_support == null ? "n/a" : pct(s.best_sentence_support)}</dd></div>
+      <div><dt>Longest copied run</dt><dd>${s.copied_span == null ? "n/a" : pct(s.copied_span)} <span style="font-size:13px;font-weight:500">of the answer</span></dd></div>
     </dl></div>
     <div class="fb" id="fb"><span>Was this verdict right?</span><button class="btn" type="button" data-fb="true">Yes, it was right</button><button class="btn" type="button" data-fb="false">No, it was wrong</button></div>
     <details class="dev"><summary>Request and response</summary>
@@ -284,7 +293,7 @@ $("#fileGo").onclick = async () => {
 
 /* =====================================================================  MONITORING  */
 const tile = (label, value, small) => `<div class="tile"><dt>${label}</dt><dd>${value}</dd>${small ? `<small>${small}</small>` : ""}</div>`;
-const FEATURE_NAME = { ans_wc: "Answer length (words)", ans_chars: "Answer length (characters)", avg_wlen: "Average word length", q_wc: "Question length", ctx_wc: "Evidence length", len_ratio: "Answer to evidence length ratio", ctx_support: "Answer words found in evidence", jaccard_ak: "Answer–evidence overlap", novel_content: "Words in neither source", ans_in_q: "Answer words from the question", n_numbers: "Numbers in the answer", unsup_numbers: "Numbers not in sources", novel_caps: "Names not in evidence", negations: "Negation words", has_number: "Answer has a number", kn_missing: "Evidence missing" };
+const FEATURE_NAME = { ans_wc: "Answer length (words)", ans_chars: "Answer length (characters)", avg_wlen: "Average word length", q_wc: "Question length", ctx_wc: "Evidence length", len_ratio: "Answer to evidence length ratio", ctx_support: "Answer words found in evidence", jaccard_ak: "Answer–evidence overlap", novel_content: "Words in neither source", ans_in_q: "Answer words from the question", n_numbers: "Numbers in the answer", unsup_numbers: "Numbers not in sources", novel_caps: "Names not in evidence", negations: "Negation words", has_number: "Answer has a number", kn_missing: "Evidence missing", causal_markers: "Causal words in the answer", hedges: "Hedging words", ttr: "Share of distinct words", soft_overlap: "Fuzzy match with best evidence sentence", q_ctx_overlap: "Question words found in evidence", best_sent_support: "Answer words in one evidence sentence", span_support: "Longest run copied from evidence", evid_causal: "Supporting sentence states a cause", neg_mismatch: "Negation disagrees with evidence" };
 function histogram(h) {
   const total = h.reduce((a, b) => a + b, 0); if (!total) return `<div class="empty">No predictions yet. Check an answer, or replay held-out requests below.</div>`;
   const W = 520, H = 190, L = 34, B = 26, T = 10, max = Math.max(...h), bw = (W - L - 8) / 10, y = v => T + (H - T - B) * (1 - v / max);
@@ -313,7 +322,8 @@ async function loadMonitor() {
     + tile("Flagged as hallucinated", n ? pct(s.labels.hallucinated / n) : "–", n ? s.labels.hallucinated + " of " + n : "")
     + tile("Median model time per answer", s.latency_ms.p50 === null ? "–" : s.latency_ms.p50 + " ms", s.latency_ms.p95 === null ? "" : "95th percentile " + s.latency_ms.p95 + " ms")
     + tile("Requests rejected", s.rejected_422, "HTTP 422 since start-up")
-    + tile("Verdicts users agreed with", fb.agreement_rate === null ? "–" : pct(fb.agreement_rate), fb.count ? fb.agree + " of " + fb.count + " rated" : "no feedback yet");
+    + tile("Verdicts users agreed with", fb.agreement_rate === null ? "–" : pct(fb.agreement_rate), fb.count ? fb.agree + " of " + fb.count + " rated" : "no feedback yet")
+    + (s.question_types ? tile("WHY and yes/no questions", s.question_types.WHY.count + " / " + s.question_types.POLAR.count, "flagged: " + s.question_types.WHY.flagged + " WHY, " + s.question_types.POLAR.flagged + " yes/no") : "");
   $("#histo").innerHTML = histogram(s.histogram); $("#timeline").innerHTML = timeline(s.timeline);
   const flagged = d.features.filter(f => f.status === "DRIFT");
   $("#driftBadge").innerHTML = d.status === "ok" ? `<span class="tag f">No drift in ${d.samples} requests</span>` : d.status === "drift" ? `<span class="tag h">Drift in ${flagged.length} of ${d.features.length} inputs</span>` : `<span class="tag warn">Needs ${d.min_samples} requests, has ${d.samples}</span>`;
@@ -340,7 +350,7 @@ const weightName = n => FEATURE_NAME[n] || (n.startsWith("support_bin_") ? "Grou
 function expChart(runs, chosen) {
   if (!runs.length) return `<div class="empty">No experiment table is bundled with this model.</div>`;
   const rows = [...runs].sort((a, b) => b.cv_f1 - a.cv_f1), W = 560, rh = 25, L = 214, R = 18, T = 8, H = T + rows.length * rh + 30;
-  const lo = Math.min(0.92, Math.floor(Math.min(...rows.map(r => Math.min(r.cv_f1, r.test_f1))) * 100) / 100), hi = 1, x = v => L + (W - L - R) * (v - lo) / (hi - lo);
+  const lo = Math.min(0.90, Math.floor(Math.min(...rows.map(r => Math.min(r.cv_f1, r.test_f1))) * 100) / 100), hi = 1, x = v => L + (W - L - R) * (v - lo) / (hi - lo);
   const ticks = []; for (let t = lo; t <= hi + 1e-9; t += 0.02) ticks.push(+t.toFixed(2));
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="F1 of each experiment on cross-validation and on the test set">
     ${ticks.map(t => `<line class="grid" x1="${x(t)}" x2="${x(t)}" y1="${T}" y2="${H - 26}"/><text x="${x(t)}" y="${H - 10}" text-anchor="middle">${t.toFixed(2)}</text>`).join("")}
@@ -365,6 +375,8 @@ async function loadModel() {
   $("#mTiles").innerHTML = tile("Test accuracy", pct(mt.test_accuracy, 1)) + tile("Test F1", mt.test_f1.toFixed(3), "precision " + mt.test_precision.toFixed(3) + ", recall " + mt.test_recall.toFixed(3))
     + tile("ROC-AUC", mt.test_roc_auc.toFixed(3)) + tile("Cross-validated F1", mt.cv_f1.toFixed(3), "± " + mt.cv_f1_std.toFixed(3) + " across grouped folds") + tile("Decision threshold", pct(m.decision_threshold), "scores at or above count as hallucinated");
   $("#expChart").innerHTML = expChart(m.experiments, m.run_name);
+  $("#cmCap").textContent = `${(m.n_test_rows || 0).toLocaleString()} answers the model never saw during training`;
+  if (m.by_question_type) $("#mTiles").innerHTML += Object.entries(m.by_question_type).map(([q, v]) => tile((q === "POLAR" ? "Yes/no" : q === "OTHER" ? "Other" : q) + " questions", pct(v.accuracy, 1), v.n.toLocaleString() + " test answers")).join("");
   const cm = m.confusion_matrix;
   $("#confusion").innerHTML = cm ? `<div class="cm"><div></div><div class="h">Predicted faithful</div><div class="h">Predicted hallucinated</div>
     <div class="h">Actually faithful</div><div class="c good"><b>${cm[0][0].toLocaleString()}</b>correct</div><div class="c miss"><b>${cm[0][1]}</b>false alarms</div>
@@ -383,9 +395,52 @@ async function loadModel() {
     ${m.request_schema.additionalProperties === false ? `<tr><td>any other field</td><td>–</td><td>–</td><td>rejected</td><td>Unknown fields are refused, so a misspelt field name cannot be ignored silently.</td></tr>` : ""}</tbody>`;
 }
 
+/* =====================================================================  QUESTION TYPES  */
+let typesLoaded = false;
+const QNAME = { WHY: "WHY questions", POLAR: "Yes / no questions", OTHER: "All other questions" };
+const STRAT = { chatgpt: "written by ChatGPT (HaluEval)", foreign_cause: "invented cause (from another topic)", evidence_distractor: "wrong clause of the same passage", altered_fact: "true cause with one fact changed" };
+const hbar = (name, v, on, tip) => `<div class="hbar ${on ? "on" : ""}"${tip ? ` data-tip="${esc(tip)}"` : ""}><span class="nm">${esc(name)}</span><span class="trk"><i style="width:${(v * 100).toFixed(1)}%"></i></span><b>${pct(v, 1)}</b></div>`;
+async function loadTypes() {
+  if (typesLoaded) return;
+  let d; try { d = (await api("/api/research")).body; } catch (e) { d = null; }
+  if (!d || !d.available) { $("#typesLead").textContent = "The question-type study has not been generated for this model. Run python qtype_study.py."; return; }
+  typesLoaded = true;
+  const pipes = d.pipelines.map(p => ({ key: p.key, name: p.key + ". " + p.name, sub: p.features + ", " + p.train_data, q: p.by_question_type, s: p.recall_by_strategy, n: p.overall.n }));
+  if (d.deployed && d.deployed.by_question_type) pipes.push({ key: "D", name: "Deployed model (" + (ALGO[d.deployed.algorithm] || d.deployed.algorithm) + ")", sub: "the model behind this service, new features and data", q: d.deployed.by_question_type, s: d.deployed.recall_by_strategy || {}, on: true });
+  if (d.bert) pipes.push({ key: "BERT", name: "BERT transformer", sub: `${d.bert.model}, ${d.bert.n_train_rows.toLocaleString()} training rows`, q: d.bert.by_question_type, s: d.bert.recall_by_strategy || {} });
+  const A = d.pipelines[0].by_question_type, dep = (d.deployed && d.deployed.by_question_type) || d.pipelines[2].by_question_type;
+  const audit = Object.fromEntries(d.audit.rows.map(r => [r.type, r]));
+  $("#tTiles").innerHTML = tile("WHY questions in HaluEval-QA", audit.why.v2 + " of " + d.audit.n_questions.toLocaleString(), "too few to study, hence the extension")
+    + tile("WHY / POLAR dataset", d.dataset.rows.toLocaleString() + " rows", d.dataset.questions.toLocaleString() + " questions, two answers each")
+    + tile("WHY accuracy", pct(A.WHY.accuracy, 0) + " → " + pct(dep.WHY.accuracy, 0), "first deployment → model now served")
+    + tile("Yes/no accuracy", pct(dep.POLAR.accuracy, 1), "driven by answer length, see below")
+    + tile("Typed “other” before", pct(audit.other.v1 / d.audit.n_questions, 0) + " → " + pct(audit.other.v2 / d.audit.n_questions, 0), "share of questions the rule could not type");
+  $("#pipeNote").textContent = `${d.dataset.split.test_rows.toLocaleString()} held-out answers (${Object.entries(d.dataset.split.test_groups).map(([k, v]) => v.toLocaleString() + " " + k).join(", ")}). A, B and C use the same algorithm (${d.pipeline_algorithm.split(" (")[0]}), so the differences come from the data and the features.${d.bert ? ` BERT was scored on ${d.bert.n_test_rows.toLocaleString()} of these rows.` : ""} The dashed line marks 50%, the accuracy of guessing.`;
+  $("#pipeCharts").innerHTML = ["WHY", "POLAR", "OTHER"].map(g => `<div class="qpanel"><h3>${QNAME[g]}</h3><span class="muted">${(d.dataset.split.test_groups[g] || 0).toLocaleString()} test answers</span>${pipes.filter(p => p.q[g]).map(p => hbar(p.name, p.q[g].accuracy, p.on, `<b>${p.name}</b><br>${p.sub}<br>accuracy ${pct(p.q[g].accuracy, 1)}, F1 ${p.q[g].f1.toFixed(3)}, AUC ${p.q[g].roc_auc.toFixed(3)}<br>${p.q[g].n} answers`)).join("")}</div>`).join("");
+  const keys = [...new Set(pipes.flatMap(p => Object.keys(p.s)))].sort((a, b) => (a.startsWith("WHY") ? 0 : 1) - (b.startsWith("WHY") ? 0 : 1) || a.localeCompare(b));
+  $("#stratTable").innerHTML = `<thead><tr><th>Question type</th><th>How the hallucinated answer was made</th>${pipes.map(p => `<th class="n" data-tip="${esc(p.name + "<br>" + p.sub)}">${p.key === "D" ? "Deployed" : p.key}</th>`).join("")}</tr></thead><tbody>${keys.map(k => { const [g, st] = k.split("/");
+    return `<tr><td>${QNAME[g].replace(" questions", "")}</td><td>${esc(STRAT[st] || st)}</td>${pipes.map(p => `<td class="n">${p.s[k] ? pcell(p.s[k].recall) : "–"}</td>`).join("")}</tr>`; }).join("")}</tbody>`;
+  const fams = ["lexical", "semantic", "contextual", "all three"];
+  $("#famChart").innerHTML = `<div class="table-wrap"><table><thead><tr><th>Question type</th>${fams.map(f => `<th class="n">${f[0].toUpperCase() + f.slice(1)}</th>`).join("")}</tr></thead><tbody>${["WHY", "POLAR", "OTHER"].map(g => { const row = d.family_accuracy[g], best = Math.max(...fams.slice(0, 3).map(f => row[f]));
+    return `<tr><td>${QNAME[g]}</td>${fams.map(f => `<td class="n">${row[f] === best && f !== "all three" ? "<b>" + pct(row[f], 1) + "</b>" : pct(row[f], 1)}</td>`).join("")}</tr>`; }).join("")}</tbody></table></div>
+    <p class="muted" style="margin-top:10px"><b>Lexical</b>: the answer's own surface (length, numbers, negations, causal and hedging words). <b>Semantic</b>: fuzzy and set overlap between answer, question and evidence. <b>Contextual</b>: whether the evidence supports the answer (per sentence, copied spans, new names and numbers, causal support). The best single family per row is in bold.</p>`;
+  const amax = Math.max(...d.audit.rows.map(r => Math.max(r.v1, r.v2)));
+  $("#auditChart").innerHTML = `<div class="table-wrap"><table><thead><tr><th>Type</th><th class="n">Old rule</th><th class="n">New rule</th><th></th></tr></thead><tbody>${d.audit.rows.map(r => `<tr><td>${r.type === "polar" ? "yes / no" : r.type}</td><td class="n">${r.v1.toLocaleString()}</td><td class="n"><b>${r.v2.toLocaleString()}</b></td><td><span class="pbar" style="width:110px"><i style="width:${r.v2 / amax * 100}%"></i></span></td></tr>`).join("")}</tbody></table></div>
+    <p class="muted" style="margin-top:10px">The old rule looked for a question word in the first four words only. Many questions end with it (“… was born in which year?”), so the new rule also takes the last question word.</p>`;
+  $("#contrastCols").innerHTML = ["WHY", "POLAR", "OTHER"].map(g => `<div class="qpanel"><h3>${QNAME[g]}</h3><span class="muted">${d.contrasts[g].n_rows.toLocaleString()} training answers</span>${d.contrasts[g].features.slice(0, 6).map(f =>
+    `<div class="crow"><span>${esc(FEATURE_NAME[f.feature] || f.feature)}<span class="fam">${f.family}</span></span><b>AUC ${f.auc.toFixed(2)}</b><small>${f.cohen_d > 0 ? "↑ higher in hallucinated" : "↑ higher in faithful"} answers (${f.faithful} faithful, ${f.hallucinated} hallucinated)</small></div>`).join("")}</div>`).join("");
+  $("#dsNote").innerHTML = `<code>data/why_polar_dataset.csv</code> holds the question, its type, the evidence, the answer, the label and how the answer was produced. <code>data/why_polar_features.csv</code> adds every lexical, semantic and contextual feature per row. Both are rebuilt by <code>build_why_polar.py</code> and are in the <a href="https://github.com/QuantamQuester/hallucination-detector/tree/main/data">repository</a>.`;
+  $("#dsTable").innerHTML = `<thead><tr><th>Question type</th><th>Source</th><th>Answer</th><th class="n">Rows</th></tr></thead><tbody>${d.dataset.composition.map(r => `<tr><td>${r.qtype === "POLAR" ? "Yes / no" : r.qtype}</td><td>${esc(r.source)}</td><td>${esc({ gold_answer: "correct answer", gold_cause: "annotated cause (faithful)" }[r.strategy] || "hallucinated: " + (STRAT[r.strategy] || r.strategy))}</td><td class="n">${r.rows.toLocaleString()}</td></tr>`).join("")}</tbody>`;
+  if (d.bert) { const b = d.bert, m = b.metrics;
+    $("#bertBlock").hidden = false;
+    $("#bertNote").textContent = `${b.model} reads the question, the answer and the evidence as one sequence (up to ${b.max_len} word pieces) and is fine-tuned to output faithful or hallucinated. This run trained ${b.frozen_layers ? "the top " + (12 - b.frozen_layers) + " of 12 layers" : "all layers"} for ${b.epochs_done} epochs on ${b.n_train_rows.toLocaleString()} of the ${b.n_train_rows_available.toLocaleString()} training rows (${b.device.toUpperCase()}, ${b.train_minutes} minutes). It is an offline experiment: the 420 MB model is not part of this service.`;
+    $("#bertTiles").innerHTML = tile("Test accuracy", pct(m.test_accuracy, 1), b.n_test_rows.toLocaleString() + " test answers") + tile("F1", m.test_f1.toFixed(3), "precision " + m.test_precision.toFixed(3) + ", recall " + m.test_recall.toFixed(3)) + tile("ROC-AUC", m.test_roc_auc.toFixed(3))
+      + Object.entries(b.by_question_type).map(([q, v]) => tile(QNAME[q], pct(v.accuracy, 1), "AUC " + v.roc_auc.toFixed(3))).join(""); }
+}
+
 /* =====================================================================  SYSTEM  */
-const PIPE = [["Data", "12,000 question–answer pairs from HaluEval-QA, half faithful and half hallucinated.", "data/halueval_qa.csv"],
-  ["Features", "19 engineered inputs plus TF-IDF of the answer. One module serves both training and the API.", "features.py"],
+const PIPE = [["Data", "12,000 question–answer pairs from HaluEval-QA plus a WHY / yes-no extension, half faithful and half hallucinated.", "data/"],
+  ["Features", "Lexical, semantic and contextual inputs with a question-type rule. One module serves both training and the API.", "features.py"],
   ["Training", "Six algorithms on a split grouped by question, chosen by grouped cross-validation.", "train.py"],
   ["Experiment tracking", "MLflow records each run's settings, metrics and model, and marks the champion.", "mlflow.db"],
   ["Model file", "The best pipeline is saved once and loaded once when the service starts.", "model/model.joblib"],
@@ -394,7 +449,7 @@ const PIPE = [["Data", "12,000 question–answer pairs from HaluEval-QA, half fa
   ["Deployment and monitoring", "Hosted with a health check and restarts; logs, metrics and a drift check watch it.", "render.yaml"]];
 const ENDPOINTS = [["GET", "/health", "Liveness probe used by the host", true], ["POST", "/predict", "Score one answer, with reasons and word marks", false], ["POST", "/predict/batch", "Score up to 50 answers in one call", false],
   ["POST", "/feedback", "Record whether a verdict was right", false], ["GET", "/api/stats", "Recent traffic for the Monitoring page", true], ["GET", "/api/drift", "Input drift against the training data", true],
-  ["GET", "/api/model", "Model card, experiments and request schema", true], ["GET", "/api/examples", "Held-out test cases", true], ["GET", "/metrics", "Prometheus metrics", true], ["GET", "/docs", "Interactive API documentation", true], ["GET", "/openapi.json", "Machine-readable API description", true]];
+  ["GET", "/api/model", "Model card, experiments and request schema", true], ["GET", "/api/examples", "Held-out test cases", true], ["GET", "/api/research", "Question-type study and BERT results", true], ["GET", "/metrics", "Prometheus metrics", true], ["GET", "/docs", "Interactive API documentation", true], ["GET", "/openapi.json", "Machine-readable API description", true]];
 async function ping() {
   const btn = $("#pingAll"); busy(btn, true);
   await Promise.all(ENDPOINTS.map(async ([m, path, , can], i) => {

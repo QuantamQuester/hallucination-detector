@@ -139,3 +139,49 @@ def test_model_card_exposes_metrics_schema_and_examples():
     assert m["metrics"]["test_f1"] > 0.9 and m["request_schema"]["properties"]["question"]["minLength"] == 5
     ex = client.get("/api/examples").json()["examples"]
     assert ex and {"question", "answer", "truth"} <= set(ex[0])
+
+
+# ---------------------------------------------------------------- question types: WHY and POLAR (v3)
+WHY_Q = "Why was the coastal fort never used in a war?"
+WHY_EV = ("The fort was completed in 1868 to guard the harbour. It was never used in a war because iron-clad ships and "
+          "long-range guns made it obsolete before it was finished. Today the site is a public park with a small museum.")
+
+
+@pytest.mark.parametrize("question,expected", [
+    ("Why did the bridge collapse?", "why"),
+    ("Is Paris the capital of France?", "polar"),
+    ("Did Scott Pembroke and Eugeniusz Bodo die in the same city?", "polar"),
+    ("Who wrote Pride and Prejudice?", "who"),
+    ("The plaintiff in the civil suit Paul v. Clinton was born in which year?", "which"),      # wh-word at the end
+    ("Girard city is located in a county with how many inhabitants?", "how"),
+])
+def test_question_type_rule(question, expected):
+    from features import qtype
+    assert qtype(question) == expected
+
+
+def test_predict_reports_the_question_type_and_a_type_specific_tip():
+    why = client.post("/predict", json={"question": WHY_Q, "knowledge": WHY_EV, "answer": "iron-clad ships made it obsolete"}).json()
+    assert why["question_type"] == "WHY" and any("WHY question" in t for t in why["tips"])
+    polar = client.post("/predict", json={"question": "Is the fort a public park today?", "knowledge": WHY_EV, "answer": "yes"}).json()
+    assert polar["question_type"] == "POLAR" and any("yes/no question" in t for t in polar["tips"])
+    assert 2 <= len(why["tips"]) <= 3 and 2 <= len(polar["tips"]) <= 3
+
+
+def test_domain_logic_why_supported_cause_beats_invented_cause():
+    """For a WHY question, the cause stated in the evidence must look MORE faithful than a cause the evidence never gives."""
+    supported = prob("iron-clad ships and long-range guns made it obsolete", knowledge=WHY_EV, question=WHY_Q)
+    invented = prob("the government ran out of money after a flood destroyed the nearby town", knowledge=WHY_EV, question=WHY_Q)
+    assert supported < invented
+
+
+def test_research_endpoint_reports_the_question_type_study():
+    r = client.get("/api/research")
+    assert r.status_code == 200
+    d = r.json()
+    if d["available"]:                                    # model/qtype_study.json is committed; regenerate with qtype_study.py
+        assert {"audit", "dataset", "contrasts", "family_accuracy", "pipelines"} <= set(d)
+        assert [p["key"] for p in d["pipelines"]] == ["A", "B", "C"]
+        assert set(d["family_accuracy"]["WHY"]) == {"lexical", "semantic", "contextual", "all three"}
+    s = client.get("/api/stats").json()
+    assert set(s["question_types"]) == {"WHY", "POLAR", "OTHER"}

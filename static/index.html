@@ -22,6 +22,7 @@
       <a href="#check" data-view="check"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 11h10M4 16h7"/><path d="M15 17l2.5 2.5L22 14"/></svg><span>Check</span></a>
       <a href="#batch" data-view="batch"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="4" rx="1"/><rect x="4" y="10" width="16" height="4" rx="1"/><rect x="4" y="16" width="16" height="4" rx="1"/></svg><span>Batch</span></a>
       <a href="#monitor" data-view="monitor"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg><span>Monitoring</span></a>
+      <a href="#types" data-view="types"><svg viewBox="0 0 24 24"><path d="M9.2 9a2.9 2.9 0 115 2c-.9.9-2.2 1.4-2.2 3.2"/><circle cx="12" cy="17.6" r=".6"/><rect x="3.5" y="3.5" width="17" height="17" rx="3"/></svg><span class="cap"><span class="long">Question </span>types</span></a>
       <a href="#model" data-view="model"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.2"/><circle cx="6" cy="17" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M8 8l8 3M8 16l8-3"/></svg><span>Model</span></a>
       <a href="#system" data-view="system"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="6" rx="1"/><rect x="14" y="4" width="7" height="6" rx="1"/><rect x="8.5" y="15" width="7" height="6" rx="1"/><path d="M6.5 10v2.5h11V10M12 12.5V15"/></svg><span>System</span></a>
     </nav>
@@ -47,7 +48,9 @@
             <button type="button" class="link" id="ex1">a faithful answer</button>
             <button type="button" class="link" id="ex2">an invented one</button>
             <button type="button" class="link" id="ex3">no evidence</button>
-            <button type="button" class="link" id="exRand">a held-out test case</button>
+            <button type="button" class="link" id="exWhy">a WHY question</button>
+            <button type="button" class="link" id="exPolar">a yes/no question</button>
+            <button type="button" class="link" id="exRand">any held-out test case</button>
           </div>
           <label class="field"><span class="field-top"><span class="field-name">Question</span><span class="count" id="cq"></span></span>
             <textarea id="question" rows="2" placeholder="Which magazine was started first, Arthur's Magazine or First for Women?"></textarea></label>
@@ -137,6 +140,51 @@
       </section>
     </section>
 
+    <!-- ============ QUESTION TYPES ============ -->
+    <section class="view" id="v-types" hidden aria-labelledby="h-types">
+      <header class="view-head">
+        <h1 id="h-types">Do WHY and yes/no questions hallucinate differently?</h1>
+        <p id="typesLead">A WHY question asks for a reason, so a hallucination is an invented or altered cause. A yes/no (polar) question can be answered wrongly in one word. This page compares the two on a dataset built for the purpose.</p>
+      </header>
+      <div class="tiles" id="tTiles"></div>
+      <section class="block">
+        <h2>Accuracy by question type, same held-out test set</h2>
+        <p class="muted" id="pipeNote"></p>
+        <div class="three" id="pipeCharts"></div>
+      </section>
+      <section class="block">
+        <h2>Which hallucinations are caught</h2>
+        <p class="muted">Share of hallucinated test answers flagged (recall), by how the hallucinated answer was produced. ChatGPT answers come from HaluEval-QA; the three WHY strategies are rule-based constructions on WikiWhy. Pipeline A flags most WHY answers of any kind, so its high recall there comes with many false alarms (its WHY accuracy is near chance).</p>
+        <div class="table-wrap"><table id="stratTable"></table></div>
+      </section>
+      <div class="two charts">
+        <figure class="chart"><figcaption><b>Which feature family works for which question type</b><span>Grouped cross-validated accuracy of a model that sees one family only. 50% is chance.</span></figcaption><div id="famChart"></div></figure>
+        <figure class="chart"><figcaption><b>Question types in HaluEval-QA</b><span>Unique questions per type, old rule and new rule</span></figcaption><div id="auditChart"></div></figure>
+      </div>
+      <section class="block">
+        <h2>The features that separate faithful from hallucinated answers</h2>
+        <p class="muted">Top six per question type by single-feature AUC on the training rows. The arrow says in which kind of answer the value is higher.</p>
+        <div class="three" id="contrastCols"></div>
+      </section>
+      <section class="block">
+        <h2>The WHY / POLAR dataset</h2>
+        <p class="muted" id="dsNote"></p>
+        <div class="table-wrap"><table id="dsTable"></table></div>
+      </section>
+      <section class="block" id="bertBlock" hidden>
+        <h2>BERT transformer</h2>
+        <p class="muted" id="bertNote"></p>
+        <div class="tiles" id="bertTiles"></div>
+      </section>
+      <section class="block"><h2>How far these results go</h2>
+        <ul class="plain">
+          <li>The hallucinated WHY answers are constructed by rules, not written by a language model. They show which kinds of wrong explanation the features can and cannot see; they do not measure how often a real model produces them.</li>
+          <li>Yes/no questions look easy only because HaluEval's correct answer is a bare “yes” or “no” and its hallucinated answer is a sentence. The score reflects that length gap, not an ability to verify the yes or the no.</li>
+          <li>Constructed distractor clauses were chosen to contain no causal wording, which helps the “supporting sentence states a cause” feature more than it would on natural errors.</li>
+        </ul>
+      </section>
+    </section>
+
     <!-- ============ MODEL ============ -->
     <section class="view" id="v-model" hidden aria-labelledby="h-model">
       <header class="view-head">
@@ -145,15 +193,16 @@
       </header>
       <div class="tiles" id="mTiles"></div>
       <div class="two charts">
-        <figure class="chart"><figcaption><b>Ten tracked experiments</b><span>F1 on grouped cross-validation (used to choose) and on the held-out test set (reported only)</span></figcaption><div id="expChart"></div></figure>
-        <figure class="chart"><figcaption><b>Held-out test results</b><span>2,400 answers the model never saw during training</span></figcaption><div id="confusion"></div></figure>
+        <figure class="chart"><figcaption><b>Tracked experiments</b><span>F1 on grouped cross-validation (used to choose) and on the held-out test set (reported only)</span></figcaption><div id="expChart"></div></figure>
+        <figure class="chart"><figcaption><b>Held-out test results</b><span id="cmCap">Answers the model never saw during training</span></figcaption><div id="confusion"></div></figure>
       </div>
       <section class="block"><h2>Experiment table</h2><div class="table-wrap"><table id="expTable"></table></div></section>
       <section class="block"><h2>What the model weighs most</h2><p class="muted" id="gwKind"></p><div class="two"><div id="gwFeat"></div><div id="gwPhr"></div></div></section>
       <section class="block"><h2>Data contract</h2><p class="muted">Read live from the request schema the API enforces. A request that breaks any rule is answered with HTTP 422 before it reaches the model.</p><div class="table-wrap"><table id="contract"></table></div></section>
       <section class="block"><h2>Known limits</h2>
         <ul class="plain">
-          <li>The benchmark's hallucinated answers are full sentences and its correct answers are short phrases. The model leans on that length difference, so a long correct answer can be flagged.</li>
+          <li>In HaluEval-QA the hallucinated answers are full sentences and the correct answers are short phrases. The model leans on that length difference for entity and yes/no questions, so a long correct answer can be flagged.</li>
+          <li>For WHY questions that shortcut does not exist. An explanation that copies the source but changes one name, number or “not” is caught far less often than an invented cause. The <a href="#types">Question types</a> page shows the figures.</li>
           <li>Grounding is lexical. An answer that reuses evidence words in a false statement can pass.</li>
           <li>It gives a probability to prioritise checking. It cannot establish that a statement is true.</li>
         </ul>
@@ -179,7 +228,7 @@
       </section>
     </section>
 
-    <footer class="foot">Built for CSL236 by Team 01 on HaluEval-QA (Li et al., EMNLP 2023).</footer>
+    <footer class="foot">Built for CSL236 by Team 01 on HaluEval-QA (Li et al., EMNLP 2023) and WikiWhy (Ho et al., ICLR 2023).</footer>
   </main>
 </div>
 <div id="tooltip" role="tooltip" hidden></div>

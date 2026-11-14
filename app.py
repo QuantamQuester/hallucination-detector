@@ -9,7 +9,8 @@ Routes
   GET  /api/stats        live traffic statistics for the monitoring view
   GET  /api/drift        live input-drift report (same rule as drift_check.py)
   GET  /api/model        model card: metrics, experiments, global feature weights, enforced request schema
-  GET  /api/examples     held-out examples for the UI
+  GET  /api/examples     held-out examples for the UI (WHY, POLAR and other questions)
+  GET  /api/research     question-type study: WHY vs POLAR, feature families, pipeline comparison, BERT
   GET  /metrics          Prometheus metrics            GET /docs  interactive OpenAPI docs
 """
 import json, os, re, threading, time, uuid
@@ -29,13 +30,13 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from starlette.responses import Response
 
 from drift_check import compute_drift
-from features import BIN_COLS, NUM_COLS, STOP, cset, make_frames, stem, toks
+from features import BIN_COLS, FEATURE_GROUPS, NUM_COLS, STOP, cset, make_frames, stem, toks
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(BASE, "model", "model.joblib"))
 META_PATH = os.getenv("META_PATH", os.path.join(BASE, "model", "metadata.json"))
 LOG_PATH = os.getenv("PREDICTION_LOG_PATH", os.path.join(BASE, "logs", "predictions.jsonl"))
-LOGGED = NUM_COLS + BIN_COLS                       # the 16 numeric features written to the prediction log
+LOGGED = NUM_COLS + BIN_COLS                       # the numeric features written to the prediction log
 MAX_BATCH = 50
 
 
@@ -52,6 +53,7 @@ MODEL = joblib.load(MODEL_PATH)
 META = _read_json(META_PATH, {})
 EXPERIMENTS = _read_json(os.path.join(BASE, "model", "experiments.json"), [])
 EXAMPLES = _read_json(os.path.join(BASE, "model", "examples.json"), [])
+STUDY = _read_json(os.path.join(BASE, "model", "qtype_study.json"), None)       # written by qtype_study.py
 MODEL_VERSION = f"{META.get('algorithm', 'unknown')}-{META.get('run_id', 'na')[:8]}"
 STARTED = time.time()
 
@@ -62,7 +64,7 @@ FEEDBACK = Counter("feedback_total", "User feedback on verdicts", ["correct"])
 _lock = threading.Lock()
 RECENT = deque(maxlen=5000)                       # in-memory window over the prediction log (stats + drift)
 
-app = FastAPI(title="Hallucination Detector API", version="2.0.0",
+app = FastAPI(title="Hallucination Detector API", version="3.0.0",
               description="Given a question, an (optional) evidence passage and an answer, estimates the probability that the answer is hallucinated.")
 app.mount("/static", StaticFiles(directory=os.path.join(BASE, "static")), name="static")
 
@@ -96,6 +98,7 @@ class PredictResponse(BaseModel):
     hallucination_probability: float
     label: str
     risk_level: str
+    question_type: str
     tips: List[str]
     signals: dict
     explanation: Optional[dict] = None
@@ -122,12 +125,18 @@ LABELS = {"ans_wc": "answer length in words", "ans_chars": "answer length in cha
           "n_numbers": "numbers in the answer", "has_number": "answer contains a number", "unsup_numbers": "numbers not in the sources",
           "novel_caps": "names not in the evidence", "ans_in_q": "answer words copied from the question",
           "q_wc": "question length", "qtype": "question type", "kn_missing": "evidence missing", "ctx_wc": "evidence length",
-          "negations": "negation words"}
-GROUPS = [("length", "Answer length and style", ["ans_wc", "ans_chars", "avg_wlen", "ans_len_cat", "len_ratio"]),
-          ("grounding", "Grounding in the evidence", ["ctx_support", "jaccard_ak", "support_bin", "novel_content"]),
+          "negations": "negation words", "causal_markers": "causal words in the answer (because, due to ...)",
+          "hedges": "hedging words", "ttr": "share of distinct words", "soft_overlap": "fuzzy match with the best evidence sentence",
+          "q_ctx_overlap": "question words found in the evidence", "best_sent_support": "answer words found in ONE evidence sentence",
+          "span_support": "longest run of answer words copied from the evidence", "evid_causal": "supporting sentence states a cause",
+          "neg_mismatch": "answer and supporting sentence disagree on negation", "polarity": "answer opens with yes / no"}
+GROUPS = [("length", "Answer length and style", ["ans_wc", "ans_chars", "avg_wlen", "ans_len_cat", "len_ratio", "ttr"]),
+          ("grounding", "Grounding in the evidence", ["ctx_support", "jaccard_ak", "support_bin", "novel_content", "best_sent_support",
+                                                      "span_support", "soft_overlap"]),
+          ("causal", "Cause and polarity cues", ["causal_markers", "evid_causal", "neg_mismatch", "polarity", "hedges"]),
           ("numbers", "Numbers", ["n_numbers", "has_number", "unsup_numbers"]),
           ("names", "New names", ["novel_caps"]),
-          ("question", "Relation to the question", ["ans_in_q", "q_wc", "qtype"]),
+          ("question", "Relation to the question", ["ans_in_q", "q_wc", "qtype", "q_ctx_overlap"]),
           ("evidence", "Evidence availability", ["kn_missing", "ctx_wc"]),
           ("negation", "Negations", ["negations"]),
           ("wording", "Wording of the answer", ["answer"])]
@@ -140,7 +149,10 @@ def _source_feature(name: str) -> str:
     if block == "tfidf":
         return "answer"
     if block == "nom":
-        return "qtype" if rest.startswith("qtype") else "support_bin"
+        return next(c for c in ("qtype", "support_bin", "polarity") if rest.startswith(c))
+    for t in ("why_x_", "polar_x_"):               # question-type interaction -> credited to its base feature
+        if rest.startswith(t):
+            return rest[len(t):]
     return rest
 
 
@@ -282,6 +294,20 @@ def build_tips(f: dict, prob: float) -> List[str]:
             tips.append(f"The answer uses {n} capitalised name{'s' if n > 1 else ''} (a person, place or organisation) that the evidence never mentions. Check {'each one' if n > 1 else 'it'}.")
     if f["ans_wc"] > 15:
         tips.append("This is a long, sentence-style answer. Long answers carry more room for invented details, so the detector treats them as riskier.")
+    qt = f.get("qtype")
+    if qt == "why":
+        if not f["kn_missing"] and not f.get("evid_causal") and f.get("best_sent_support", 0) > 0:
+            tips.insert(0, "This is a WHY question, but the evidence sentence closest to the answer does not state a cause "
+                           "(no 'because', 'due to', 'led to' ...). Check that the stated reason is really given by the source.")
+        else:
+            tips.append("This is a WHY question: an explanation can copy the source almost word for word and still change one "
+                        "name, number or 'not'. Compare each fact in the reason with the evidence.")
+    elif qt == "polar":
+        tips.insert(0, "This is a yes/no question. Word overlap cannot confirm the yes or the no itself; the detector judges the "
+                       "claims added around it, so verify the direction of the answer against the evidence."
+                    if f.get("polarity") != "none" or f["ans_wc"] <= 3 else
+                    "This is a yes/no question, but the answer does not open with a clear yes or no. Evasive or re-framed "
+                    "answers to polar questions are a common hallucination pattern.")
     if len(tips) < 2:
         tips.append("Compare the answer with the source for the key fact asked in the question." if prob < 0.5
                     else "Treat the answer as unverified and check the key facts against a reliable source.")
@@ -338,16 +364,21 @@ def score(items: List[PredictRequest], with_explanation: bool) -> List[dict]:
         f = {k: _plain(v) for k, v in frame.iloc[i].to_dict().items()}
         label = "hallucinated" if prob >= 0.5 else "faithful"
         risk = "high" if prob >= 0.8 else "medium" if prob >= 0.5 else "low-medium" if prob >= 0.2 else "low"
-        tips = build_tips({k: (0 if f.get(k) is None else f[k]) for k in ["ctx_support", "unsup_numbers", "novel_caps", "ans_wc", "kn_missing"]}, prob)
+        tips = build_tips({**{k: (0 if f.get(k) is None else f[k]) for k in ["ctx_support", "unsup_numbers", "novel_caps", "ans_wc",
+                                                                             "kn_missing", "evid_causal", "best_sent_support"]},
+                           "qtype": f.get("qtype"), "polarity": f.get("polarity")}, prob)
         signals = {"grounding_in_evidence": None if f["ctx_support"] is None else round(float(f["ctx_support"]), 3),
                    "answer_words": int(f["ans_wc"]), "unsupported_numbers": None if f["unsup_numbers"] is None else int(f["unsup_numbers"]),
-                   "new_named_terms": None if f["novel_caps"] is None else int(f["novel_caps"]), "evidence_provided": not bool(f["kn_missing"])}
+                   "new_named_terms": None if f["novel_caps"] is None else int(f["novel_caps"]), "evidence_provided": not bool(f["kn_missing"]),
+                   "best_sentence_support": None if f.get("best_sent_support") is None else round(float(f["best_sent_support"]), 3),
+                   "copied_span": None if f.get("span_support") is None else round(float(f["span_support"]), 3),
+                   "supporting_sentence_is_causal": bool(f.get("evid_causal")), "answer_polarity": f.get("polarity")}
         pid = uuid.uuid4().hex[:12]
         LATENCY.observe(per_item); PRED_COUNT.labels(label=label).inc()
         log_prediction({"ts": datetime.now(timezone.utc).isoformat(timespec="seconds"), "id": pid, "probability": round(prob, 4),
-                        "label": label, "latency_ms": round(per_item * 1000, 2), "model_version": MODEL_VERSION,
+                        "label": label, "latency_ms": round(per_item * 1000, 2), "model_version": MODEL_VERSION, "qtype": f.get("qtype"),
                         "features": {k: f[k] for k in LOGGED}})
-        out.append({"id": pid, "hallucination_probability": round(prob, 4), "label": label, "risk_level": risk, "tips": tips,
+        out.append({"id": pid, "hallucination_probability": round(prob, 4), "label": label, "risk_level": risk, "question_type": str(f.get("qtype", "other")).upper(), "tips": tips,
                     "signals": signals, "explanation": explain(frame.iloc[[i]], prob) if with_explanation else None,
                     "marked": mark_text(items[i].question, items[i].knowledge, items[i].answer) if with_explanation else None,
                     "model_version": MODEL_VERSION})
@@ -400,6 +431,11 @@ def feedback(fb: FeedbackRequest):
     return {"status": "recorded", "prediction_id": fb.prediction_id, "correct": fb.correct}
 
 
+def _qgroup(rec: dict) -> str:
+    q = rec.get("qtype")
+    return "WHY" if q == "why" else "POLAR" if q == "polar" else "OTHER"
+
+
 @app.get("/api/stats", tags=["monitoring"])
 def stats():
     recs = list(RECENT)
@@ -416,6 +452,8 @@ def stats():
             "evidence_missing_share": round(sum(bool(r["features"].get("kn_missing")) for r in recs) / len(recs), 3) if recs else None,
             "timeline": [{"ts": r["ts"], "p": r["probability"], "ms": r.get("latency_ms")} for r in recs[-80:]],
             "feedback": {"count": len(fb), "agree": sum(fb), "agreement_rate": round(sum(fb) / len(fb), 3) if fb else None},
+            "question_types": {g: {"count": sum(_qgroup(r) == g for r in recs),
+                                   "flagged": sum(_qgroup(r) == g and r["probability"] >= 0.5 for r in recs)} for g in ("WHY", "POLAR", "OTHER")},
             "rejected_422": int(REJECTED._value.get()), "uptime_seconds": round(time.time() - STARTED), "model_version": MODEL_VERSION}
 
 
@@ -434,13 +472,26 @@ def drift(min_samples: int = 30):
 @app.get("/api/model", tags=["model"])
 def model_card():
     keep = ["algorithm", "params", "run_name", "registry_version", "metrics", "trained_at", "sklearn", "python",
-            "n_train_rows", "n_test_rows", "confusion_matrix"]
+            "n_train_rows", "n_test_rows", "confusion_matrix", "feature_set", "by_question_type", "recall_by_strategy", "data"]
     return {"model_version": MODEL_VERSION, **{k: META.get(k) for k in keep}, "experiments": EXPERIMENTS,
             "global_weights": GLOBAL_WEIGHTS, "request_schema": PredictRequest.model_json_schema(),
             "decision_threshold": 0.5, "risk_bands": {"low": [0, 0.2], "low-medium": [0.2, 0.5], "medium": [0.5, 0.8], "high": [0.8, 1]},
-            "max_batch": MAX_BATCH}
+            "max_batch": MAX_BATCH, "n_features": len(LOGGED), "feature_families": FEATURE_GROUPS}
 
 
 @app.get("/api/examples", tags=["model"])
 def examples():
     return {"count": len(EXAMPLES), "note": "held-out test questions, never used for training", "examples": EXAMPLES}
+
+
+@app.get("/api/research", tags=["model"])
+def research():
+    """Question-type study (qtype_study.py + train_bert.py): how WHY and POLAR questions differ, which feature family
+    catches their hallucinations, and how the pipelines compare on the same held-out test set."""
+    if not STUDY:
+        return {"available": False, "note": "run `python qtype_study.py` to generate model/qtype_study.json"}
+    return {"available": True, "deployed": {"model_version": MODEL_VERSION, "algorithm": META.get("algorithm"),
+                                            "by_question_type": META.get("by_question_type"),
+                                            "recall_by_strategy": META.get("recall_by_strategy"),
+                                            "overall": {k: META.get("metrics", {}).get(k) for k in ("test_accuracy", "test_f1", "test_roc_auc")}},
+            **STUDY}

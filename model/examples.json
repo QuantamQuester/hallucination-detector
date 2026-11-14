@@ -1,146 +1,290 @@
 [
  {
-  "question": "How many caps for England did Lee Devonshire's son win ?",
-  "knowledge": " His son, Alan Devonshire, was capped by England. Devonshire won eight caps for England between 1980 and 1983.",
-  "answer": "Nine",
-  "truth": "hallucinated"
+  "question": "Four Darks in Red is shown in Mark Rothko's mural projects for what skyskraper, that is located at 375 Park Avenue in Manhattan?",
+  "knowledge": "Four Darks in Red shows Mark Rothko's often used axis of black, brown and red, which is in a number of his easel paintings and in the mural projects for the Seagram Building.The Seagram Building is a skyscraper, located at 375 Park Avenue, between 52nd Street and 53rd Street in Midtown Manhattan, New York City.",
+  "answer": "Four Darks in Red is shown in Mark Rothko's many mural projects for skyscrapers around New York City.",
+  "truth": "hallucinated",
+  "question_type": "what",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
  },
  {
-  "question": "Where is the there a small medevial castle",
-  "knowledge": "Castlebay (Scottish Gaelic: \"B\u00e0gh a' Chaisteil\" ) is the main village and a community council area on the island of Barra in the Outer Hebrides, Scotland.Kisimul Castle (Scottish Gaelic: \"Caisteal Chiosmuil\" ) and also known as Kiessimul Castle, is a small medieval castle located on a small island off Castlebay, Barra, in the Outer Hebrides, Scotland.",
-  "answer": "Scotland",
-  "truth": "faithful"
+  "question": "Is it true that both Miho Hatori and Daryl Braithwaite have roots outside of the United States?",
+  "knowledge": "Miho Hatori (\u7fbd\u9ce5 \u7f8e\u4fdd , Hatori Miho , born in Tokyo, Japan) is a Japanese singer, songwriter, and musician.Daryl Braithwaite (born 11 January 1949) is an Australian singer.",
+  "answer": "yes",
+  "truth": "faithful",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
  },
  {
-  "question": "In between Dartmouth College and Columbia University, which one was established in 1754?",
-  "knowledge": "Dartmouth College ( ) is a private Ivy League research university in Hanover, New Hampshire, United States. Established in 1769 by Eleazar Wheelock, it is the ninth-oldest institution of higher education in the United States and one of the nine colonial colleges chartered before the American Revolution.Columbia University (Columbia; officially Columbia University in the City of New York), established in 1754, is a private Ivy League research university in Upper Manhattan, New York City, often cited as one of the world's most prestigious universities.",
-  "answer": "Columbia University",
-  "truth": "faithful"
+  "question": "Eric Radomski is a producer an co-creator of a series that premiered on what television channel?",
+  "knowledge": "Eric Radomski is a producer most closely linked with Warner Bros. He is perhaps best known as co-creator and co-producer of \"\".\", \"Ultimate Spider-Man\", \"Avengers Assemble\", \"Hulk and the Agents of S.M.A.S.H.\" and \"Guardians of the Galaxy\".Avengers Assemble is an American animated television series based on the fictional Marvel Comics superhero team known as the Avengers. Designed to capitalize on the success of the 2012 film, \"The Avengers\", the series premiered on Disney XD on May 26, 2013, as the successor to \"\".",
+  "answer": "Disney XD",
+  "truth": "faithful",
+  "question_type": "what",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
  },
  {
-  "question": "Where was the leader of a military raid in April 1862 in northern Georgia from?",
-  "knowledge": "James J. Andrews (c. 1829 \u2013 June 7, 1862) was a Kentucky civilian who worked for the Union Army during the early years of the American Civil War.The Great Locomotive Chase or Andrews' Raid was a military raid that occurred on April 12, 1862, in northern Georgia during the American Civil War. Volunteers from the Union Army, led by civilian scout James J. Andrews, commandeered a train and took it northward toward Chattanooga, Tennessee, doing as much damage as possible to the vital Western and Atlantic Railroad (W&A) line from Atlanta to Chattanooga as they went.",
-  "answer": "Kentucky",
-  "truth": "faithful"
+  "question": "Who gained recognition as a trap artist for remixing Rihanna's song  released on March 26, 2015?",
+  "knowledge": "Aaron Waisglass, better known by his stage name Grandtheft, is a Canadian DJ and musician based in Toronto. He gained recognition as a trap artist, for remixing songs like \u201cSummer\u201c, \u201cSweet Nothing\u201c and \u201cBitch Better Have My Money\u201d and having songs charted around the world.\"Bitch Better Have My Money\" is a song recorded by Barbadian singer Rihanna. The song was digitally released on March 26, 2015, through the iTunes Store.",
+  "answer": "Grandtheft gained recognition as a trap artist for remixing Rihanna's hit song, \"Diamonds\".",
+  "truth": "hallucinated",
+  "question_type": "who",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
  },
  {
-  "question": "In between Dartmouth College and Columbia University, which one was established in 1754?",
-  "knowledge": "Dartmouth College ( ) is a private Ivy League research university in Hanover, New Hampshire, United States. Established in 1769 by Eleazar Wheelock, it is the ninth-oldest institution of higher education in the United States and one of the nine colonial colleges chartered before the American Revolution.Columbia University (Columbia; officially Columbia University in the City of New York), established in 1754, is a private Ivy League research university in Upper Manhattan, New York City, often cited as one of the world's most prestigious universities.",
-  "answer": "Dartmouth College was established in 1754.",
-  "truth": "hallucinated"
+  "question": "Which years were the line of cars that the Ferrari TR were closely related to built?",
+  "knowledge": "The Ferrari TR, or 250 Testa Rossa, is a race car model built by Ferrari in the 1950s and 1960s. They were closely related to the rest of the Ferrari 250 line, including the 250 GTO.The Ferrari 250 is a sports car built by Ferrari from 1953 to 1964.",
+  "answer": "1953 to 1964",
+  "truth": "faithful",
+  "question_type": "which",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
  },
  {
-  "question": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by which Vietnam War veteran, and an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed?",
-  "knowledge": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by Vietnam War veteran Ron Kovic.Ronald Lawrence \"Ron\" Kovic (born July 4, 1946) is an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed in the Vietnam War.",
-  "answer": "Ronald Lawrence \"Ron\" Kovic",
-  "truth": "faithful"
+  "question": "What mountain range can be seen from Schweitzer Mountain Resort in northwestern Idaho and is named for the state flower of Montana?",
+  "knowledge": "Schweitzer Mountain Resort is a ski resort in the northwest United States in northern Idaho, 11 mi northwest of Sandpoint.The Bitterroot Range is a mountain range and a subrange of the Rocky Mountains that runs along the border of Montana and Idaho in the northwestern United States. The range spans an area of 24223 mi2 and is named after the bitterroot (\"Lewisia rediviva\"), a small pink flower that is the state flower of Montana.",
+  "answer": "The Bitterroot Range cannot be seen from Schweitzer Mountain Resort in northwestern Idaho.",
+  "truth": "hallucinated",
+  "question_type": "what",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
  },
  {
-  "question": "What unit was directed by Shiro Ishii and based at the Pingfang district of Harbin?",
-  "knowledge": "Surgeon General Shir\u014d Ishii (\u77f3\u4e95 \u56db\u90ce , Ishii Shir\u014d , ; June 25, 1892 \u2013 October 9, 1959) was a Japanese army medical officer, microbiologist and the director of Unit 731, a biological warfare unit of the Imperial Japanese Army involved in forced and frequently lethal human experimentation during the Second Sino-Japanese War (1937\u20131945). Unit 731 was based at the Pingfang district of Harbin, the largest city in the Japanese puppet state of Manchukuo (now Northeast China).",
-  "answer": "Unit 731",
-  "truth": "faithful"
+  "question": "How many albums, by 2014 had the musician who provided the soundtrack to the platform game Capsized, released ?",
+  "knowledge": " The soundtrack is provided by Solar Fields; the ambient electronic music is from his 2009 album \"Movements\". As of 2014, he has released fifteen albums, and has also scored all interactive in-game music for the Electronic Arts game \"Mirror's Edge\".",
+  "answer": "The musician who provided the soundtrack to Capsized had released twenty albums by 2014.",
+  "truth": "hallucinated",
+  "question_type": "how",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
  },
  {
-  "question": "How many caps for England did Lee Devonshire's son win ?",
-  "knowledge": " His son, Alan Devonshire, was capped by England. Devonshire won eight caps for England between 1980 and 1983.",
-  "answer": "eight",
-  "truth": "faithful"
+  "question": "Four Darks in Red is shown in Mark Rothko's mural projects for what skyskraper, that is located at 375 Park Avenue in Manhattan?",
+  "knowledge": "Four Darks in Red shows Mark Rothko's often used axis of black, brown and red, which is in a number of his easel paintings and in the mural projects for the Seagram Building.The Seagram Building is a skyscraper, located at 375 Park Avenue, between 52nd Street and 53rd Street in Midtown Manhattan, New York City.",
+  "answer": "Seagram Building",
+  "truth": "faithful",
+  "question_type": "what",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
  },
  {
-  "question": "Where is the there a small medevial castle",
-  "knowledge": "Castlebay (Scottish Gaelic: \"B\u00e0gh a' Chaisteil\" ) is the main village and a community council area on the island of Barra in the Outer Hebrides, Scotland.Kisimul Castle (Scottish Gaelic: \"Caisteal Chiosmuil\" ) and also known as Kiessimul Castle, is a small medieval castle located on a small island off Castlebay, Barra, in the Outer Hebrides, Scotland.",
-  "answer": "The small medieval castle is located off Castlebay on Barra island in Scotland.",
-  "truth": "hallucinated"
+  "question": "What mountain range can be seen from Schweitzer Mountain Resort in northwestern Idaho and is named for the state flower of Montana?",
+  "knowledge": "Schweitzer Mountain Resort is a ski resort in the northwest United States in northern Idaho, 11 mi northwest of Sandpoint.The Bitterroot Range is a mountain range and a subrange of the Rocky Mountains that runs along the border of Montana and Idaho in the northwestern United States. The range spans an area of 24223 mi2 and is named after the bitterroot (\"Lewisia rediviva\"), a small pink flower that is the state flower of Montana.",
+  "answer": "The Bitterroot Range",
+  "truth": "faithful",
+  "question_type": "what",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
  },
  {
-  "question": "What island has parts leased to Macau and a bridge to Macau?",
-  "knowledge": "Lotus Bridge () is a cross-border bridge linking the Cotai reclamation area of Macau with Hengqin Island in Zhuhai, Guangdong Province, People's Republic of China (PRC). The bridge is the road crossing between mainland China and Macau.Hengqin, sometimes known as Ilha de Montanha in Portuguese\",\" is an island in Zhuhai, a prefecture-level city and Special Economic Zone in the Guangdong province of the People's Republic of China. Parts of Hengqin are leased to Macau by the State Council of the People's Republic of China in 2009.",
-  "answer": "Hengqin",
-  "truth": "faithful"
+  "question": "Eric Radomski is a producer an co-creator of a series that premiered on what television channel?",
+  "knowledge": "Eric Radomski is a producer most closely linked with Warner Bros. He is perhaps best known as co-creator and co-producer of \"\".\", \"Ultimate Spider-Man\", \"Avengers Assemble\", \"Hulk and the Agents of S.M.A.S.H.\" and \"Guardians of the Galaxy\".Avengers Assemble is an American animated television series based on the fictional Marvel Comics superhero team known as the Avengers. Designed to capitalize on the success of the 2012 film, \"The Avengers\", the series premiered on Disney XD on May 26, 2013, as the successor to \"\".",
+  "answer": "Eric Radomski is a producer and co-creator of a series that premiered on Cartoon Network.",
+  "truth": "hallucinated",
+  "question_type": "what",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
  },
  {
-  "question": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist, Bengali, is also known by its endonym Bangla, it's the national, and official language of which country?",
-  "knowledge": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist. It is the national and official language of the People's Republic of Bangladesh, and the official language of some eastern and north-eastern states of the Republic of India, including West Bengal, Tripura, Assam (Barak Valley) and Andaman and Nicobar Islands.",
-  "answer": "Bengali is not the national language of any country.",
-  "truth": "hallucinated"
+  "question": "Are Andrew Stockdale and Sully Erna both vocalists?",
+  "knowledge": "Andrew James Stockdale (born 20 July 1976) is an Australian rock musician, singer and songwriter best known as the lead vocalist, lead guitarist and only mainstay member of the rock band Wolfmother, which formed in 2000.Salvatore Paul \"Sully\" Erna Jr. (born February 7, 1968) is the American vocalist and guitarist for the American hard rock band Godsmack.",
+  "answer": "Andrew Stockdale is a lead vocalist, but Sully Erna is a backup vocalist.",
+  "truth": "hallucinated",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
  },
  {
-  "question": "Which position did the Canadian ice hockey player known as a power forward play in the West Coast Express?",
-  "knowledge": "The West Coast Express was an ice hockey line that played for the National Hockey League's (NHL) Vancouver Canucks from 2002 to 2006. Named after Vancouver's commuter rail service, the line consisted of Markus Naslund at left wing, Brendan Morrison at centre, and Todd Bertuzzi playing right wing.Todd Bertuzzi (born February 2, 1975) is a Canadian retired professional ice hockey winger of the National Hockey League (NHL). Known as a power forward, he has played in the NHL for the New York Islanders, Vancouver Canucks, Florida Panthers, Anaheim Ducks, Calgary Flames and Detroit Red Wings.",
-  "answer": "right wing",
-  "truth": "faithful"
+  "question": "Which years were the line of cars that the Ferrari TR were closely related to built?",
+  "knowledge": "The Ferrari TR, or 250 Testa Rossa, is a race car model built by Ferrari in the 1950s and 1960s. They were closely related to the rest of the Ferrari 250 line, including the 250 GTO.The Ferrari 250 is a sports car built by Ferrari from 1953 to 1964.",
+  "answer": "The line of cars that the Ferrari TR were closely related to was only built between 1953 to 1961.",
+  "truth": "hallucinated",
+  "question_type": "which",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
  },
  {
-  "question": "What unit was directed by Shiro Ishii and based at the Pingfang district of Harbin?",
-  "knowledge": "Surgeon General Shir\u014d Ishii (\u77f3\u4e95 \u56db\u90ce , Ishii Shir\u014d , ; June 25, 1892 \u2013 October 9, 1959) was a Japanese army medical officer, microbiologist and the director of Unit 731, a biological warfare unit of the Imperial Japanese Army involved in forced and frequently lethal human experimentation during the Second Sino-Japanese War (1937\u20131945). Unit 731 was based at the Pingfang district of Harbin, the largest city in the Japanese puppet state of Manchukuo (now Northeast China).",
-  "answer": "Unit 727.",
-  "truth": "hallucinated"
+  "question": "Who gained recognition as a trap artist for remixing Rihanna's song  released on March 26, 2015?",
+  "knowledge": "Aaron Waisglass, better known by his stage name Grandtheft, is a Canadian DJ and musician based in Toronto. He gained recognition as a trap artist, for remixing songs like \u201cSummer\u201c, \u201cSweet Nothing\u201c and \u201cBitch Better Have My Money\u201d and having songs charted around the world.\"Bitch Better Have My Money\" is a song recorded by Barbadian singer Rihanna. The song was digitally released on March 26, 2015, through the iTunes Store.",
+  "answer": "Aaron Waisglass",
+  "truth": "faithful",
+  "question_type": "who",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
  },
  {
-  "question": "Are Thums Up and Mott's based in the same country?",
-  "knowledge": "As of February 2012, Thums Up is the leader in the cola segment in India, commanding approximately 42% market share and an overall 15% market share in the Indian aerated waters market.Mott's is an American company involved primarily in producing apple-based products, particularly juices and sauces.",
+  "question": "Is it true that both Miho Hatori and Daryl Braithwaite have roots outside of the United States?",
+  "knowledge": "Miho Hatori (\u7fbd\u9ce5 \u7f8e\u4fdd , Hatori Miho , born in Tokyo, Japan) is a Japanese singer, songwriter, and musician.Daryl Braithwaite (born 11 January 1949) is an Australian singer.",
+  "answer": "No, only Miho Hatori has roots outside of the United States.",
+  "truth": "hallucinated",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
+ },
+ {
+  "question": "How many albums, by 2014 had the musician who provided the soundtrack to the platform game Capsized, released ?",
+  "knowledge": " The soundtrack is provided by Solar Fields; the ambient electronic music is from his 2009 album \"Movements\". As of 2014, he has released fifteen albums, and has also scored all interactive in-game music for the Electronic Arts game \"Mirror's Edge\".",
+  "answer": "fifteen",
+  "truth": "faithful",
+  "question_type": "how",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
+ },
+ {
+  "question": "Are Andrew Stockdale and Sully Erna both vocalists?",
+  "knowledge": "Andrew James Stockdale (born 20 July 1976) is an Australian rock musician, singer and songwriter best known as the lead vocalist, lead guitarist and only mainstay member of the rock band Wolfmother, which formed in 2000.Salvatore Paul \"Sully\" Erna Jr. (born February 7, 1968) is the American vocalist and guitarist for the American hard rock band Godsmack.",
+  "answer": "yes",
+  "truth": "faithful",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
+ },
+ {
+  "question": "Was the documentary 500 Years Later released first or was it the documentary Here Is Always Somewhere Else?",
+  "knowledge": "500 Years Later (\u136d\u137b \u12d3\u1218\u1273\u1275 \u1260\u128b\u120b \"500 \u02bfam\u00e4tat\u0259 b\u00e4hwala \") is an independent documentary film directed by Owen 'Alik Shahadah, written by M. K. Asante, Jr. and released in 2005.Here Is Always Somewhere Else is a 2007 documentary film directed by Rene Daalder and co-produced and edited by Aaron Ohlmann.",
+  "answer": "Here Is Always Somewhere Else was released first.",
+  "truth": "hallucinated",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
+ },
+ {
+  "question": "Why did Catholic missionaries soon establish a considerable presence in China around 1245?",
+  "knowledge": "The Italian explorer and archbishop Giovanni da Pian del Carpine and Polish friar and traveler Benedykt Polak were the first papal envoys to reach Karakorum after being sent there by Pope Innocent IV in 1245. The \"Historia Mongalorum\" was later written by Pian del Carpini, documenting his travels and a cursory history of the Mongols. Catholic missionaries soon established a considerable presence in China, due to the religious tolerance of the Mongols, due in no small part to the Khan's own great tolerance and open encouragement of the development of trade and intellectual avocation. The 18th-century English historian Edward Gibbon commented on the Mongols' religious tolerance and went as far as to compare the \"religious laws\" of Genghis Khan to equivalent ideas propounded by the Enlightenment English philosopher John Locke.",
+  "answer": "Genghis Khan were religiously tolerant.",
+  "truth": "hallucinated",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "altered_fact:entity"
+ },
+ {
+  "question": "Why did members of Community Board 13 of the Metro Transit Authority in New York City oppose converting the Q5 Limited to Select Bus Service?",
+  "knowledge": "In 2007, the MTA and the New York City Department of Transportation (NYCDOT) proposed converting the Q5 Limited to Select Bus Service, the city's version of Bus Rapid Transit. The Q5 SBS would have run every 5 to 8 minutes, while no changes would be made to local service. On March 26, 2007, members of Community Board 13 spoke out against the proposal because parking on Merrick Boulevard would have been eliminated for peak hour bus lanes. At the time, the NYCDOT expected the changes to go into effect no later than 2008.",
+  "answer": "The Q5 SBS would have run every 5 to 8 minutes.",
+  "truth": "hallucinated",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "evidence_distractor"
+ },
+ {
+  "question": "Are Marshall Neilan and Godfrey Reggio both directors?",
+  "knowledge": "Marshall Ambrose \"Mickey\" Neilan (April 11, 1891 \u2013 October 27, 1958) was an American motion picture actor, screenwriter, film director, and producer.Godfrey Reggio (born March 29, 1940) is an American director of experimental documentary films.",
+  "answer": "Marshall Neilan was a director, but Godfrey Reggio was a writer.",
+  "truth": "hallucinated",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
+ },
+ {
+  "question": "Are Marshall Neilan and Godfrey Reggio both directors?",
+  "knowledge": "Marshall Ambrose \"Mickey\" Neilan (April 11, 1891 \u2013 October 27, 1958) was an American motion picture actor, screenwriter, film director, and producer.Godfrey Reggio (born March 29, 1940) is an American director of experimental documentary films.",
+  "answer": "yes",
+  "truth": "faithful",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
+ },
+ {
+  "question": "Why is C. Edmund Kells referred to as \"the father of dental radiography?\"",
+  "knowledge": "Kells introduced dental X-rays at a July 1896 meeting of the Southern Dental Association in North Carolina. This is thought to be the first time that intraoral X-rays were taken on a live person in the United States. The subject was Kells's dental assistant. Kells designed an X-ray film holder that allowed the subject to swallow while holding the film with the teeth, and he stabilized the subject's head by placing a thin board between the head and the X-ray tube. With the thin board, Kells had unknowingly created the first X-ray filter and likely prevented radiation injury to his subject. During part of his conference presentation, Kells showed fluoroscopic images of the bones of the hand, causing curious hotel guests to file into the conference room. Because of Kells's influence in developing imaging techniques, he has been referred to as \"the father of dental radiography\".",
+  "answer": "The subject was Kells's dental assistant.",
+  "truth": "hallucinated",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "evidence_distractor"
+ },
+ {
+  "question": "Why did Catholic missionaries soon establish a considerable presence in China around 1245?",
+  "knowledge": "The Italian explorer and archbishop Giovanni da Pian del Carpine and Polish friar and traveler Benedykt Polak were the first papal envoys to reach Karakorum after being sent there by Pope Innocent IV in 1245. The \"Historia Mongalorum\" was later written by Pian del Carpini, documenting his travels and a cursory history of the Mongols. Catholic missionaries soon established a considerable presence in China, due to the religious tolerance of the Mongols, due in no small part to the Khan's own great tolerance and open encouragement of the development of trade and intellectual avocation. The 18th-century English historian Edward Gibbon commented on the Mongols' religious tolerance and went as far as to compare the \"religious laws\" of Genghis Khan to equivalent ideas propounded by the Enlightenment English philosopher John Locke.",
+  "answer": "The Mongols were religiously tolerant.",
+  "truth": "faithful",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "gold_cause"
+ },
+ {
+  "question": "Why did members of Community Board 13 of the Metro Transit Authority in New York City oppose converting the Q5 Limited to Select Bus Service?",
+  "knowledge": "In 2007, the MTA and the New York City Department of Transportation (NYCDOT) proposed converting the Q5 Limited to Select Bus Service, the city's version of Bus Rapid Transit. The Q5 SBS would have run every 5 to 8 minutes, while no changes would be made to local service. On March 26, 2007, members of Community Board 13 spoke out against the proposal because parking on Merrick Boulevard would have been eliminated for peak hour bus lanes. At the time, the NYCDOT expected the changes to go into effect no later than 2008.",
+  "answer": "parking on Merrick Boulevard would have been eliminated for peak hour bus lanes.",
+  "truth": "faithful",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "gold_cause"
+ },
+ {
+  "question": "Was the documentary 500 Years Later released first or was it the documentary Here Is Always Somewhere Else?",
+  "knowledge": "500 Years Later (\u136d\u137b \u12d3\u1218\u1273\u1275 \u1260\u128b\u120b \"500 \u02bfam\u00e4tat\u0259 b\u00e4hwala \") is an independent documentary film directed by Owen 'Alik Shahadah, written by M. K. Asante, Jr. and released in 2005.Here Is Always Somewhere Else is a 2007 documentary film directed by Rene Daalder and co-produced and edited by Aaron Ohlmann.",
+  "answer": "500 Years Later",
+  "truth": "faithful",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
+ },
+ {
+  "question": "Are both Diet Pepsi and Volvic carbonated drinks?",
+  "knowledge": "Diet Pepsi and Diet Pepsi Classic Formula Blend (stylized as diet PEPSI CLASSIC SWEETENER BLEND) are no-calorie carbonated cola soft drinks produced by PepsiCo, introduced in 1964 as a variant of Pepsi-Cola with no sugar.Volvic is a brand of mineral water.",
+  "answer": "Yes, both Diet Pepsi and Volvic are carbonated drinks.",
+  "truth": "hallucinated",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "chatgpt"
+ },
+ {
+  "question": "Why does the Belasco Theatre in midtown Manhattan in New York City measure just 105 by 100 ft (32 by 30 m)?",
+  "knowledge": "The primary elevation of the facade faces south on 44th Street and is made of red brick in Flemish bond, with terracotta decorative elements. It is split into an office section to the west and the main theater section to the east. The side walls are faced in plain brick. The 44th Street elevation is about 60 ft (18 m) tall, while the rear elevation is cited as being 80 ft (24 m) or 90 ft (27 m) tall. To comply with fire regulations at the time of the Belasco's construction, the theater is surrounded by an alley measuring 10 ft (3.0 m) wide. Due to the presence of the alley, the theater only measures 105 by 100 ft (32 by 30 m).",
+  "answer": "The 44th Street elevation is about 60 ft",
+  "truth": "hallucinated",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "evidence_distractor"
+ },
+ {
+  "question": "Why does the Belasco Theatre in midtown Manhattan in New York City measure just 105 by 100 ft (32 by 30 m)?",
+  "knowledge": "The primary elevation of the facade faces south on 44th Street and is made of red brick in Flemish bond, with terracotta decorative elements. It is split into an office section to the west and the main theater section to the east. The side walls are faced in plain brick. The 44th Street elevation is about 60 ft (18 m) tall, while the rear elevation is cited as being 80 ft (24 m) or 90 ft (27 m) tall. To comply with fire regulations at the time of the Belasco's construction, the theater is surrounded by an alley measuring 10 ft (3.0 m) wide. Due to the presence of the alley, the theater only measures 105 by 100 ft (32 by 30 m).",
+  "answer": "The presence of the 10 ft. alley,",
+  "truth": "faithful",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "gold_cause"
+ },
+ {
+  "question": "Why is C. Edmund Kells referred to as \"the father of dental radiography?\"",
+  "knowledge": "Kells introduced dental X-rays at a July 1896 meeting of the Southern Dental Association in North Carolina. This is thought to be the first time that intraoral X-rays were taken on a live person in the United States. The subject was Kells's dental assistant. Kells designed an X-ray film holder that allowed the subject to swallow while holding the film with the teeth, and he stabilized the subject's head by placing a thin board between the head and the X-ray tube. With the thin board, Kells had unknowingly created the first X-ray filter and likely prevented radiation injury to his subject. During part of his conference presentation, Kells showed fluoroscopic images of the bones of the hand, causing curious hotel guests to file into the conference room. Because of Kells's influence in developing imaging techniques, he has been referred to as \"the father of dental radiography\".",
+  "answer": "C. Edmund Kells had lots of influence in developing imaging techniques.",
+  "truth": "faithful",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "gold_cause"
+ },
+ {
+  "question": "Why did the ladies of Althorp mansion use the gallery for exercise on rainy days during the Tudor times?",
+  "knowledge": "The Picture Gallery stretches for 115 feet (35 m) on the first floor of the west wing, 21 feet (6.4 m) wide and 19 feet (5.8 m) high. The room is one of the best remaining examples of the original Tudor woodwork and ambiance in the mansion, featuring oak panelling along its length. During the renovation of the 18th century, the oak panelling in the gallery was covered with white paint, and it was not until 1904 that it was restored to its former glory, the restoration funded by the sale of a Rubens painting in the housekeeper's room. Due to its length, during Tudor times the ladies of the mansion used the gallery for exercise on rainy days to avoid dragging their long skirts and dresses through the mud in the grounds. It was also used as a dining hall, and in 1695 the county nobility and gentry all met together and dined in the gallery to pay their respects to William III.",
+  "answer": "The time-frame and nature of the excavation of the artefacts.",
+  "truth": "hallucinated",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "foreign_cause"
+ },
+ {
+  "question": "Are both Diet Pepsi and Volvic carbonated drinks?",
+  "knowledge": "Diet Pepsi and Diet Pepsi Classic Formula Blend (stylized as diet PEPSI CLASSIC SWEETENER BLEND) are no-calorie carbonated cola soft drinks produced by PepsiCo, introduced in 1964 as a variant of Pepsi-Cola with no sugar.Volvic is a brand of mineral water.",
   "answer": "no",
-  "truth": "faithful"
+  "truth": "faithful",
+  "question_type": "polar",
+  "source": "HaluEval-QA",
+  "strategy": "gold_answer"
  },
  {
-  "question": "Where was the leader of a military raid in April 1862 in northern Georgia from?",
-  "knowledge": "James J. Andrews (c. 1829 \u2013 June 7, 1862) was a Kentucky civilian who worked for the Union Army during the early years of the American Civil War.The Great Locomotive Chase or Andrews' Raid was a military raid that occurred on April 12, 1862, in northern Georgia during the American Civil War. Volunteers from the Union Army, led by civilian scout James J. Andrews, commandeered a train and took it northward toward Chattanooga, Tennessee, doing as much damage as possible to the vital Western and Atlantic Railroad (W&A) line from Atlanta to Chattanooga as they went.",
-  "answer": "The leader of the military raid in April 1862 in northern Georgia was originally from Indiana.",
-  "truth": "hallucinated"
- },
- {
-  "question": "Are Thums Up and Mott's based in the same country?",
-  "knowledge": "As of February 2012, Thums Up is the leader in the cola segment in India, commanding approximately 42% market share and an overall 15% market share in the Indian aerated waters market.Mott's is an American company involved primarily in producing apple-based products, particularly juices and sauces.",
-  "answer": "Thums Up is actually a Japanese cola brand.",
-  "truth": "hallucinated"
- },
- {
-  "question": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by which Vietnam War veteran, and an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed?",
-  "knowledge": "Born on the Fourth of July is a 1989 American biographical war drama film based on the best-selling autobiography of the same name by Vietnam War veteran Ron Kovic.Ronald Lawrence \"Ron\" Kovic (born July 4, 1946) is an American anti-war activist, writer, and former United States Marine Corps sergeant, who was wounded and paralyzed in the Vietnam War.",
-  "answer": "Robert Lawrence \"Bob\" Kovic",
-  "truth": "hallucinated"
- },
- {
-  "question": "What is the French name of the bay into which the Big Salon River flows?",
-  "knowledge": "The Big Salmon River is a small river in southern New Brunswick, Canada, that flows south into the Bay of Fundy.The Bay of Fundy (French: \"Baie de Fundy\" ) is a bay on the Atlantic coast of North America, on the northeast end of the Gulf of Maine between the Canadian provinces of New Brunswick and Nova Scotia, with a small portion touching the U.S. state of Maine.",
-  "answer": "Baie de Fundy",
-  "truth": "faithful"
- },
- {
-  "question": "What island has parts leased to Macau and a bridge to Macau?",
-  "knowledge": "Lotus Bridge () is a cross-border bridge linking the Cotai reclamation area of Macau with Hengqin Island in Zhuhai, Guangdong Province, People's Republic of China (PRC). The bridge is the road crossing between mainland China and Macau.Hengqin, sometimes known as Ilha de Montanha in Portuguese\",\" is an island in Zhuhai, a prefecture-level city and Special Economic Zone in the Guangdong province of the People's Republic of China. Parts of Hengqin are leased to Macau by the State Council of the People's Republic of China in 2009.",
-  "answer": "The bridge linking Macau to the mainland China is named after the Lotus flower, which is native to the island of Hengqin.",
-  "truth": "hallucinated"
- },
- {
-  "question": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist, Bengali, is also known by its endonym Bangla, it's the national, and official language of which country?",
-  "knowledge": "Azfar Hussain (Bengali: \u0986\u099c\u09ab\u09be\u09b0 \u09b9\u09cb\u09b8\u09c7\u09a8 ) is a Bangladeshi theorist, critic, academic, bilingual writer, poet, translator, and activist. It is the national and official language of the People's Republic of Bangladesh, and the official language of some eastern and north-eastern states of the Republic of India, including West Bengal, Tripura, Assam (Barak Valley) and Andaman and Nicobar Islands.",
-  "answer": "People's Republic of Bangladesh",
-  "truth": "faithful"
- },
- {
-  "question": "Are Desiree Akhavan and Ilya Naishuller both Russian?",
-  "knowledge": "Desiree Akhavan (1984) is an Iranian-American film director, producer, screenwriter and actress based in New York.Ilya Viktorovich Naishuller (\"Russian\": \u0418\u043b\u044c\u044f \u0412\u0438\u043a\u0442\u043e\u0440\u043e\u0432\u0438\u0447 \u041d\u0430\u0439\u0448\u0443\u043b\u043b\u0435\u0440; born 1983, Moscow, USSR) is a Russian musician, film director, and screenwriter.",
-  "answer": "no",
-  "truth": "faithful"
- },
- {
-  "question": "What is the French name of the bay into which the Big Salon River flows?",
-  "knowledge": "The Big Salmon River is a small river in southern New Brunswick, Canada, that flows south into the Bay of Fundy.The Bay of Fundy (French: \"Baie de Fundy\" ) is a bay on the Atlantic coast of North America, on the northeast end of the Gulf of Maine between the Canadian provinces of New Brunswick and Nova Scotia, with a small portion touching the U.S. state of Maine.",
-  "answer": "The French name of the Bay of Fundy is La Baie de Fundy.",
-  "truth": "hallucinated"
- },
- {
-  "question": "Are Desiree Akhavan and Ilya Naishuller both Russian?",
-  "knowledge": "Desiree Akhavan (1984) is an Iranian-American film director, producer, screenwriter and actress based in New York.Ilya Viktorovich Naishuller (\"Russian\": \u0418\u043b\u044c\u044f \u0412\u0438\u043a\u0442\u043e\u0440\u043e\u0432\u0438\u0447 \u041d\u0430\u0439\u0448\u0443\u043b\u043b\u0435\u0440; born 1983, Moscow, USSR) is a Russian musician, film director, and screenwriter.",
-  "answer": "Desiree Akhavan and Ilya Naishuller share Iranian heritage.",
-  "truth": "hallucinated"
- },
- {
-  "question": "Which position did the Canadian ice hockey player known as a power forward play in the West Coast Express?",
-  "knowledge": "The West Coast Express was an ice hockey line that played for the National Hockey League's (NHL) Vancouver Canucks from 2002 to 2006. Named after Vancouver's commuter rail service, the line consisted of Markus Naslund at left wing, Brendan Morrison at centre, and Todd Bertuzzi playing right wing.Todd Bertuzzi (born February 2, 1975) is a Canadian retired professional ice hockey winger of the National Hockey League (NHL). Known as a power forward, he has played in the NHL for the New York Islanders, Vancouver Canucks, Florida Panthers, Anaheim Ducks, Calgary Flames and Detroit Red Wings.",
-  "answer": "The Canadian ice hockey player known as a power forward played centre in the West Coast Express.",
-  "truth": "hallucinated"
+  "question": "Why did the ladies of Althorp mansion use the gallery for exercise on rainy days during the Tudor times?",
+  "knowledge": "The Picture Gallery stretches for 115 feet (35 m) on the first floor of the west wing, 21 feet (6.4 m) wide and 19 feet (5.8 m) high. The room is one of the best remaining examples of the original Tudor woodwork and ambiance in the mansion, featuring oak panelling along its length. During the renovation of the 18th century, the oak panelling in the gallery was covered with white paint, and it was not until 1904 that it was restored to its former glory, the restoration funded by the sale of a Rubens painting in the housekeeper's room. Due to its length, during Tudor times the ladies of the mansion used the gallery for exercise on rainy days to avoid dragging their long skirts and dresses through the mud in the grounds. It was also used as a dining hall, and in 1695 the county nobility and gentry all met together and dined in the gallery to pay their respects to William III.",
+  "answer": "The gallery at Althrop mansion is long.",
+  "truth": "faithful",
+  "question_type": "why",
+  "source": "WikiWhy",
+  "strategy": "gold_cause"
  }
 ]

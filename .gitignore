@@ -8,3 +8,5 @@ logs/
 tests/_test_predictions.jsonl
 .DS_Store
 # mlflow.db is intentionally committed so evaluators can open the experiment history
+model/*_predictions.csv
+ci_mlflow.db
