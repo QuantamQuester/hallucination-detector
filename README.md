@@ -30,9 +30,9 @@ Built for CSL236 (Introduction to AI and Machine Learning, The NorthCap Universi
 ## Deliverables
 | What | Where |
 |---|---|
-| **Final notebook** (executed, 151 cells: Part 1 mid-term, Part 2 MLOps, Part 3 question-type study) | [`notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb`](notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb) |
+| **Final notebook** (executed, 151 cells: Part 1 EDA & baseline, Part 2 MLOps, Part 3 question-type study) | [`notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb`](notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb) |
 | **Final report** (18 pages, formal) | [`docs/final/Team01_CSL236_Final_Report.pdf`](docs/final/Team01_CSL236_Final_Report.pdf) (+ `.docx`) |
-| **Project guide** (plain-language explanation, demo script, viva Q&A) | [`docs/final/Team01_CSL236_Project_Explained.pdf`](docs/final/Team01_CSL236_Project_Explained.pdf) (+ `.docx`) |
+| **Project guide** (plain-language explanation, Q&A) | [`docs/final/Team01_CSL236_Project_Explained.pdf`](docs/final/Team01_CSL236_Project_Explained.pdf) (+ `.docx`) |
 | **Final presentation** (12 slides) | [`docs/final/Team01_CSL236_Final_Presentation.pptx`](docs/final/Team01_CSL236_Final_Presentation.pptx) |
 | Earlier end-term reports (before the question-type study) | `docs/BhavyaSangwan_24CSU039.pdf`, `docs/RishikaSharma_24CSU173.pdf` |
 
@@ -71,8 +71,8 @@ Large language models sometimes give fluent answers that are not supported by fa
 **Dataset:** HaluEval-QA - Li, Cheng, Zhao, Nie, Wen (2023), *HaluEval: A Large-Scale Hallucination Evaluation Benchmark for Large Language Models*, EMNLP 2023,
 <https://github.com/RUCAIBox/HaluEval> (`data/qa_data.json`, questions derived from HotpotQA). 6,000 questions are sampled (seed 42); each gives one faithful
 (label 0) and one hallucinated (label 1) answer -> **12,000 rows, balanced**. `data/halueval_qa.csv` (5.9 MB) is committed; `python download_data.py` rebuilds it.
-5 % of the questions have their evidence blanked (seeded **simulation** of a retrieval failure, documented in the mid-term notebook).
-Pre-processing and evaluation were done in the mid-term notebook (stages A-H, Part 1 of [`notebooks/`](notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb)); this repo ships that model.
+5 % of the questions have their evidence blanked (seeded **simulation** of a retrieval failure, documented in the final notebook).
+Pre-processing and evaluation were done in the final notebook (stages A-H, Part 1 of [`notebooks/`](notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb)); this repo ships that model.
 The train/test split (80/20) is **grouped by question** so both answers to one question are never on different sides, and it happens before anything is fitted.
 
 ### Data contract (enforced by the Pydantic schema - violations return HTTP 422)
@@ -306,7 +306,7 @@ On HaluEval-QA alone the linear SVM was best; once WHY questions are included th
 (the linear models need the explicit `why_x_*` / `polar_x_*` interaction columns and still trail on WHY). The saved model is 0.1 MB and needs no extra dependency.
 The overall score is lower than the earlier 97.5 % because the test set now contains WHY questions, which are harder; on the non-WHY questions the new model is better than the old one (section 2).
 Choosing by validation rather than test score avoids tuning to the test set.
-Honest caveat: part of the accuracy on entity and yes/no questions comes from a benchmark shortcut (ChatGPT hallucinations are full sentences, gold answers are short); see section 2 and the mid-term notebook.
+Honest caveat: part of the accuracy on entity and yes/no questions comes from a benchmark shortcut (ChatGPT hallucinations are full sentences, gold answers are short); see section 2 and the final notebook.
 
 ## 7. Testing
 `pytest -v --tb=short` runs 33 test cases: health check, interface loads, response contract (2-3 tips, probability in [0, 1]), **two domain-logic tests**
@@ -350,11 +350,13 @@ Length/style shortcut of the benchmark; the WHY hallucinations are rule-built an
 single task (HaluEval-QA); statistics are kept in memory per process and the log file is lost on hosts with ephemeral disks. Next: full BERT fine-tuning on a GPU and an NLI cross-encoder feature for altered facts, WHY hallucinations written by a language model instead of rules, retrieval so no gold evidence is needed, automatic retraining when drift is flagged or user agreement falls, MLflow Model Registry promotion gates.
 
 ## 11. Team contribution
-| Member | Roll no. | Contribution |
-|---|---|---|
-| Bhavya Sangwan | 24CSU039 | Data preparation and feature engineering (`download_data.py`, `features.py`), training script and MLflow tracking (`train.py`), model comparison and selection, drift check (`drift_check.py`), report |
-| Rishika Sharma | 24CSU173 | FastAPI service and data contract (`app.py`), web interface (`static/`), pytest suite, Dockerfile, GitHub Actions workflow and deployment, presentation |
-| Both | | EDA and the mid-term notebook, README, demo and viva preparation |
+
+| | |
+|---|---|
+| **Team** | 01 — Bhavya Sangwan (24CSU039) · Rishika Sharma (24CSU173) |
+| **Course** | CSL236, The NorthCap University |
+
+The team collectively designed, implemented, and evaluated the full project. Work covered across the team includes: data preparation and feature engineering (`download_data.py`, `features.py`), training pipeline and MLflow tracking (`train.py`), model comparison and selection, input-drift monitoring (`drift_check.py`), FastAPI service and data contract (`app.py`), web interface (`static/`), pytest suite, Dockerfile, GitHub Actions CI/CD workflow, cloud deployment, EDA, final notebook, report, README, and presentation.
 
 ## 12. References
 Li et al. (2023) HaluEval, EMNLP; Ho et al. (2023) WikiWhy, ICLR, <https://github.com/matt-seb-ho/WikiWhy>; Devlin et al. (2019) BERT, NAACL; Yang et al. (2018) HotpotQA; Pedregosa et al. (2011) scikit-learn; Zaharia et al. MLflow (<https://mlflow.org>); FastAPI (<https://fastapi.tiangolo.com>);
