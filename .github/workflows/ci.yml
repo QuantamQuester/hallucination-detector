@@ -20,7 +20,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Train a baseline model (MLflow-tracked)
-        run: python train.py --algorithm logreg --C 1 --force-save
+        run: python train.py --algorithm logreg --C 1 --force-save --tracking-uri sqlite:///ci_mlflow.db --no-register
 
       - name: Run tests
         run: pytest -v --tb=short
