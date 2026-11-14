@@ -1,20 +1,68 @@
-# Hallucination Detector - CSL236 End-Term Project (Team 01)
+# Hallucination Detector
 
-Ships the mid-term model (classical ML hallucination detection on HaluEval-QA) as a production-style ML system:
-tracked experiments (MLflow), a validated FastAPI service with a five-page web interface, automated tests, a lean Docker image, CI on GitHub Actions,
-cloud deployment config, request logging, Prometheus metrics, per-prediction explanations, a user-feedback loop and a live drift check.
+[![CI](https://github.com/QuantamQuester/hallucination-detector/actions/workflows/ci.yml/badge.svg)](https://github.com/QuantamQuester/hallucination-detector/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/badge/live%20demo-verimind--6syg.onrender.com-2F5BEA)](https://verimind-6syg.onrender.com/)
+![Python](https://img.shields.io/badge/python-3.11-blue) ![Tests](https://img.shields.io/badge/tests-33%20passing-2da44e) ![License](https://img.shields.io/badge/data-HaluEval%20%2B%20WikiWhy-lightgrey)
 
-**Version 3 adds a question-type study** (section 2): a WHY / yes-no dataset with lexical, semantic and contextual features, a model retrained on it,
-a fine-tuned **BERT transformer** for comparison, and a *Question types* page in the interface.
+**A service that scores how likely a language model's answer is to be hallucinated**, given the question and an (optional) evidence passage.
+Built for CSL236 (Introduction to AI and Machine Learning, The NorthCap University) by Team 01, in three phases:
+
+1. **Mid-term** - a leakage-safe classical-ML study on HaluEval-QA (12,000 balanced rows, six algorithms).
+2. **End-term (MLOps)** - the model shipped as a tracked (MLflow), validated (FastAPI + Pydantic), tested (33 pytest cases), containerised (Docker), CI-checked (GitHub Actions) and deployed (Render) service with a six-page web interface.
+3. **Research extension** - do **WHY** and **yes/no** questions hallucinate differently? A new dataset, lexical / semantic / contextual features, five pipelines compared on one test set, and a **BERT** baseline.
 
 | | |
 |---|---|
-| **Team** | 01 |
-| **Members** | Bhavya Sangwan - 24CSU039, Rishika Sharma - 24CSU173 |
+| **Team** | 01 - Bhavya Sangwan (24CSU039), Rishika Sharma (24CSU173) |
 | **Course** | CSL236 - Introduction to AI and Machine Learning, B.Tech CSE, Semester 5, The NorthCap University |
-| **GitHub repository** | <https://github.com/QuantamQuester/hallucination-detector> |
-| **Live deployment** | <https://verimind-6syg.onrender.com/> (Render, redeploys on every push to `main`) |
-| **Report** | `docs/BhavyaSangwan_24CSU039.pdf`, `docs/RishikaSharma_24CSU173.pdf` (same team report) |
+| **Live app** | <https://verimind-6syg.onrender.com/> (Render, redeploys on every push to `main`) |
+| **Repository** | <https://github.com/QuantamQuester/hallucination-detector> |
+
+## Results at a glance
+| | Result |
+|---|---|
+| Mid-term (HaluEval-QA, 2,400 test rows) | best model 97.7 % accuracy, ROC-AUC 0.995 |
+| Deployed model (HaluEval-QA + WHY/yes-no data, 3,304 test rows) | gradient boosting: 95.9 % accuracy, F1 0.959, ROC-AUC 0.992 |
+| WHY questions, first deployment -> final | **56 % -> 86 %** (yes/no 100 %, other 99 %) |
+| Hardest case | a true cause with **one fact changed** is caught only 28-37 % of the time (feature models and reduced BERT alike) |
+| Honest limits | the WHY hallucinations are rule-built, yes/no accuracy is mostly a length effect, the BERT run is CPU-sized - see sections 2 and 10 |
+
+## Deliverables
+| What | Where |
+|---|---|
+| **Final notebook** (executed, 151 cells: Part 1 mid-term, Part 2 MLOps, Part 3 question-type study) | [`notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb`](notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb) |
+| **Final report** (18 pages, formal) | [`docs/final/Team01_CSL236_Final_Report.pdf`](docs/final/Team01_CSL236_Final_Report.pdf) (+ `.docx`) |
+| **Project guide** (plain-language explanation, demo script, viva Q&A) | [`docs/final/Team01_CSL236_Project_Explained.pdf`](docs/final/Team01_CSL236_Project_Explained.pdf) (+ `.docx`) |
+| **Final presentation** (12 slides) | [`docs/final/Team01_CSL236_Final_Presentation.pptx`](docs/final/Team01_CSL236_Final_Presentation.pptx) |
+| Earlier end-term reports (before the question-type study) | `docs/BhavyaSangwan_24CSU039.pdf`, `docs/RishikaSharma_24CSU173.pdf` |
+
+## How it fits together
+```mermaid
+flowchart LR
+    A[HaluEval-QA<br/>WikiWhy] --> B[build_why_polar.py<br/>download_data.py]
+    B --> C[features.py<br/>lexical / semantic / contextual]
+    C --> D[train.py<br/>grouped split, 10 MLflow runs]
+    D --> E[(model/model.joblib<br/>mlflow.db)]
+    E --> F[app.py FastAPI<br/>/predict /api/*]
+    C --> F
+    F --> G[Web interface<br/>6 pages]
+    F --> H[logs, /metrics,<br/>drift check]
+    I[GitHub push] --> J[GitHub Actions<br/>train, test, Docker] --> K[Render<br/>auto-deploy]
+    E -.-> L[qtype_study.py<br/>train_bert.py]
+    L -.-> F
+```
+
+## Quick start
+```bash
+git clone https://github.com/QuantamQuester/hallucination-detector && cd hallucination-detector
+python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
+uvicorn app:app --port 8000        # open http://localhost:8000  (a trained model is already committed)
+pytest -q                           # 33 tests
+```
+Retrain everything: `python build_why_polar.py && python train.py --sweep && python qtype_study.py` (see section 4).
+No GPU or Hugging Face access is needed for any of this; only the optional full BERT fine-tuning wants a GPU.
+
+**Contents:** 1 Problem and data contract - 2 Question-type study - 3 Repository layout - 4 Setup and run - 5 MLflow results - 6 Which model and why - 7 Testing - 8 Docker, CI, deployment - 9 Screenshots - 10 Limitations - 11 Team contribution - 12 References
 
 ## 1. Problem statement and dataset
 Large language models sometimes give fluent answers that are not supported by facts (**hallucinations**). Given a **question**, an optional
@@ -24,7 +72,7 @@ Large language models sometimes give fluent answers that are not supported by fa
 <https://github.com/RUCAIBox/HaluEval> (`data/qa_data.json`, questions derived from HotpotQA). 6,000 questions are sampled (seed 42); each gives one faithful
 (label 0) and one hallucinated (label 1) answer -> **12,000 rows, balanced**. `data/halueval_qa.csv` (5.9 MB) is committed; `python download_data.py` rebuilds it.
 5 % of the questions have their evidence blanked (seeded **simulation** of a retrieval failure, documented in the mid-term notebook).
-Pre-processing and evaluation were done in the mid-term notebook (stages A-H); this repo ships that model.
+Pre-processing and evaluation were done in the mid-term notebook (stages A-H, Part 1 of [`notebooks/`](notebooks/Team01_CSL236_HallucinationDetection_Final.ipynb)); this repo ships that model.
 The train/test split (80/20) is **grouped by question** so both answers to one question are never on different sides, and it happens before anything is fitted.
 
 ### Data contract (enforced by the Pydantic schema - violations return HTTP 422)
@@ -170,7 +218,8 @@ requirements.txt            full dev/training environment
 requirements-serve.txt      lean serving runtime (no MLflow / pytest)
 render.yaml                 Render deployment blueprint
 mlflow.db                   experiment history (committed so evaluators can open it)
-docs/                       screenshots and a sample prediction log
+docs/                       screenshots, a sample prediction log; docs/final/ = final report, guide and slides
+notebooks/                  the final executed notebook (Parts 1-3)
 ```
 
 ## 4. Setup and run
@@ -274,7 +323,7 @@ The screenshot below predates the nine question-type cases.
 * **CI (`.github/workflows/ci.yml`)** on every push to `main`: install -> train a baseline model (`logreg`, `--force-save`) -> `pytest` -> build the Docker image -> smoke-test the container (health 200, invalid input 422) -> optional deploy hook.
 * **Deployment (Render free tier, Docker runtime):** push the repo to GitHub, Render -> *New* -> *Blueprint* -> select the repo (`render.yaml`). Alternatives: Railway, or AWS EC2 `t3.micro` with
   `docker run -d -p 80:8000 --restart unless-stopped hallucination-detector`. For the bonus CD step add the Render *Deploy Hook* URL as the GitHub secret `RENDER_DEPLOY_HOOK`.
-* **Logging and monitoring:** every prediction appends a JSON line (timestamp, id, probability, label, latency, the 27 numeric input features and the question type; never the raw text) to `logs/predictions.jsonl` (see `docs/sample_predictions.jsonl`);
+* **Logging and monitoring:** every prediction appends a JSON line (timestamp, id, probability, label, latency, the 25 numeric input features and the question type; never the raw text) to `logs/predictions.jsonl` (see `docs/sample_predictions.jsonl`);
   user feedback goes to `logs/feedback.jsonl`. Prometheus metrics at `/metrics` (`predictions_total`, `prediction_latency_seconds`, `validation_errors_total`, `feedback_total`). The Monitoring page reads `/api/stats` and `/api/drift`.
   On hosts with ephemeral disks mount a volume or ship the log elsewhere.
 * **Explainability (bonus):** `/predict` returns the signed contribution of each feature group to the score (weight x value for linear models; occlusion, i.e. the change in probability when a feature is replaced by its training mean, for the gradient-boosting model now deployed), shown on the Check page.
@@ -294,7 +343,7 @@ The screenshot below predates the nine question-type cases.
 | pytest | ![](docs/screenshots/pytest_output.png) |
 | Question types | ![](docs/screenshots/ui_question_types.png) |
 | A WHY question on the Check page | ![](docs/screenshots/ui_check_why.png) |
-| Green CI check | _add a screenshot of the latest green GitHub Actions run after pushing_ |
+| Green CI check | see the CI badge at the top and the *Actions* tab; add a screenshot for the report |
 
 ## 10. Limitations and next steps
 Length/style shortcut of the benchmark; the WHY hallucinations are rule-built and a single changed fact inside a copied explanation is caught only about a third of the time; the BERT run is CPU-sized (4 of 12 layers, 3,600 rows); lexical grounding cannot catch a wrong answer that reuses the evidence's own words (a natural-language-inference or fine-tuned transformer model would); 5 % missing evidence is simulated;

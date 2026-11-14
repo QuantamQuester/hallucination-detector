@@ -107,7 +107,7 @@ def main():
          **pipeline(train[train["in_base"] == 1], test, "v1")},
         {"key": "B", "name": "+ WHY/POLAR data", "features": "v1 (16 features)", "train_data": "HaluEval-QA + WHY/POLAR",
          **pipeline(train, test, "v1")},
-        {"key": "C", "name": "+ new features", "features": "v2 (24 features + question-type interactions)", "train_data": "HaluEval-QA + WHY/POLAR",
+        {"key": "C", "name": "+ new features", "features": "v2 (25 features + question-type interactions)", "train_data": "HaluEval-QA + WHY/POLAR",
          **pipeline(train, test, "v2")},
     ]
     bert = json.load(open(a.bert)) if os.path.exists(a.bert) else None

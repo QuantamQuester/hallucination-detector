@@ -83,6 +83,11 @@ def pad(seqs, value=0):
     return out
 
 
+def first(out):
+    """A BERT layer returns a tuple in transformers 4.x and a plain tensor in newer releases."""
+    return out[0] if isinstance(out, (tuple, list)) else out
+
+
 class Split:
     """BERT cut in two: a frozen lower part (run without gradients, cacheable) and a trainable upper part."""
 
@@ -107,14 +112,14 @@ class Split:
                 was = self.m.training
                 self.m.eval()                                  # frozen layers: no dropout, deterministic -> cacheable
                 for layer in bert.encoder.layer[:self.n]:
-                    h = layer(h, attention_mask=self.mask(attn))[0]
+                    h = first(layer(h, attention_mask=self.mask(attn)))
                 self.m.train(was)
         return h
 
     def upper(self, h, attn):
         bert = self.m.bert
         for layer in bert.encoder.layer[self.n:]:
-            h = layer(h, attention_mask=self.mask(attn))[0]
+            h = first(layer(h, attention_mask=self.mask(attn)))
         return self.m.classifier(self.m.dropout(bert.pooler(h)))
 
 

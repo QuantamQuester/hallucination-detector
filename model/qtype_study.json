@@ -900,7 +900,7 @@
   {
    "key": "C",
    "name": "+ new features",
-   "features": "v2 (24 features + question-type interactions)",
+   "features": "v2 (25 features + question-type interactions)",
    "train_data": "HaluEval-QA + WHY/POLAR",
    "overall": {
     "n": 3304,
