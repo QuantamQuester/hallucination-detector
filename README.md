@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/badge/python-3.11-blue) ![Tests](https://img.shields.io/badge/tests-33%20passing-2da44e) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **A service that scores how likely a language model's answer is to be hallucinated**, given the question and an (optional) evidence passage.
-Built for CSL236 (Introduction to AI and Machine Learning, The NorthCap University) by Team 01, in three phases:
+Built for CSL236 (Introduction to AI and Machine Learning, The NorthCap University) by Team 01 MindFlayer, in three phases:
 
 1. **Mid-term** - a leakage-safe classical-ML study on HaluEval-QA (12,000 balanced rows, six algorithms).
 2. **End-term (MLOps)** - the model shipped as a tracked (MLflow), validated (FastAPI + Pydantic), tested (33 pytest cases), containerised (Docker), CI-checked (GitHub Actions) and deployed (Render) service with a six-page web interface.
